@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ShoppingBag } from "lucide-react";
 import styles from "@/app/products/products.module.css";
 
 export default function ProductCard({ product }) {
@@ -21,7 +22,9 @@ export default function ProductCard({ product }) {
 
         <div className={styles.cardFooter}>
           <p className={styles.price}>₱{product.price.toFixed(2)}</p>
-          <button className={styles.cartBtn}>🛒</button>
+          <button className={styles.cartBtn}>
+            <ShoppingBag size={18} />
+          </button>
         </div>
       </div>
     </div>
