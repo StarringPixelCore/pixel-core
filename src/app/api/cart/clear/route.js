@@ -1,0 +1,24 @@
+import { NextResponse } from "next/server";
+import pool from "@/lib/db";
+
+export async function DELETE() {
+  try {
+    const userId = 1;
+
+    const [cartRows] = await pool.query(
+      "SELECT * FROM cart WHERE user_id = ? LIMIT 1",
+      [userId]
+    );
+
+    if (cartRows.length > 0) {
+      await pool.query("DELETE FROM cart_items WHERE cart_id = ?", [
+        cartRows[0].id,
+      ]);
+    }
+
+    return NextResponse.json({ message: "Cart cleared" });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Failed to clear cart" }, { status: 500 });
+  }
+}

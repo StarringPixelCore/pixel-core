@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ShoppingCart } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -9,12 +10,12 @@ export default function Navbar() {
   const links = [
     { name: "Home", href: "/" },
     { name: "Products", href: "/products" },
-    { name: "Cart", href: "/cart" },
+    { name: "Cart", href: "/cart", isCart: true },
   ];
 
   return (
     <nav style={styles.nav}>
-      <div style={styles.logo}>Pixel-Core</div>
+      <div style={styles.logo}>temp navbar</div>
 
       <div style={styles.links}>
         {links.map((link) => (
@@ -24,9 +25,10 @@ export default function Navbar() {
             style={{
               ...styles.link,
               ...(pathname === link.href ? styles.activeLink : {}),
+              ...(link.isCart ? styles.cartLink : {}),
             }}
           >
-            {link.name}
+            {link.isCart ? <ShoppingCart size={20} /> : link.name}
           </Link>
         ))}
       </div>
@@ -51,6 +53,7 @@ const styles = {
   links: {
     display: "flex",
     gap: "18px",
+    alignItems: "center",
   },
   link: {
     textDecoration: "none",
@@ -58,9 +61,18 @@ const styles = {
     fontWeight: "500",
     padding: "8px 12px",
     borderRadius: "8px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   activeLink: {
     backgroundColor: "#8b5e3c",
     color: "#fff",
+  },
+  cartLink: {
+    width: "42px",
+    height: "42px",
+    borderRadius: "50%",
+    backgroundColor: "#f3e7dc",
   },
 };

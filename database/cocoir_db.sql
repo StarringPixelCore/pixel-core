@@ -1,4 +1,4 @@
-CREATE TABLE tblusers (
+CREATE TABLE users (
     id              int(11)             NOT NULL AUTO_INCREMENT,
     first_name      VARCHAR(100)        NOT NULL,
     last_name       VARCHAR(100)        NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE tblusers (
     role            varchar(50)         DEFAULT 'Buyer',
     profile_picture VARCHAR(255)        DEFAULT 'default.jpg',
     is_verified     int(11)             NOT NULL DEFAULT 0,
-    verify_token    VARCHAR(255)        NOT NULL,
+    verify_token    VARCHAR(255)        DEFAULT NULL,
     reset_token     varchar(255)        DEFAULT NULL,
     reset_token_expires_at  DATETIME    DEFAULT NULL,
     created_at      DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -18,7 +18,7 @@ CREATE TABLE tblusers (
     UNIQUE KEY uq_users_email (email)
 );
 
-CREATE TABLE tblproducts (
+CREATE TABLE products (
     id          INT AUTO_INCREMENT,
     name        VARCHAR(255)        NOT NULL,
     description TEXT,
@@ -31,31 +31,34 @@ CREATE TABLE tblproducts (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE tblcart (
+CREATE TABLE cart (
     id          INT AUTO_INCREMENT,
-    user_id     INT             NOT NULL,
-    created_at  DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
- 
+    user_id     INT NOT NULL,
+    created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
     PRIMARY KEY (id),
+    UNIQUE KEY uq_cart_user (user_id),
     CONSTRAINT fk_cart_user FOREIGN KEY (user_id) REFERENCES users (id)
         ON DELETE CASCADE
 );
  
-CREATE TABLE tblcart_items (
+CREATE TABLE cart_items (
     id          INT AUTO_INCREMENT,
-    cart_id     INT             NOT NULL,
-    product_id  INT             NOT NULL,
-    quantity    INT             NOT NULL DEFAULT 1,
-    added_at    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
- 
+    cart_id     INT NOT NULL,
+    product_id  INT NOT NULL,
+    quantity    INT NOT NULL DEFAULT 1,
+    price       DECIMAL(10,2) NOT NULL,
+    added_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
     PRIMARY KEY (id),
-    CONSTRAINT fk_cartitem_cart    FOREIGN KEY (cart_id)    REFERENCES cart (id)
+    UNIQUE KEY uq_cart_product (cart_id, product_id),
+    CONSTRAINT fk_cartitem_cart FOREIGN KEY (cart_id) REFERENCES cart (id)
         ON DELETE CASCADE,
     CONSTRAINT fk_cartitem_product FOREIGN KEY (product_id) REFERENCES products (id)
         ON DELETE CASCADE
 );
 
-CREATE TABLE tblorders (
+CREATE TABLE orders (
     id              INT AUTO_INCREMENT,
     user_id         INT             NOT NULL,
  
@@ -87,7 +90,7 @@ CREATE TABLE tblorders (
         ON DELETE CASCADE
 );
 
-CREATE TABLE tblorder_items (
+CREATE TABLE order_items (
     id              INT AUTO_INCREMENT,
     order_id        INT             NOT NULL,
     product_id      INT             NOT NULL,
@@ -104,7 +107,7 @@ CREATE TABLE tblorder_items (
         ON DELETE RESTRICT
 );
 
-CREATE TABLE tblpayment_details (
+CREATE TABLE payment_details (
     id                  INT AUTO_INCREMENT,
     order_id            INT             NOT NULL,
  
@@ -129,7 +132,7 @@ CREATE TABLE tblpayment_details (
         ON DELETE CASCADE
 );
 
-CREATE TABLE tbltransactions (
+CREATE TABLE transactions (
     id                  INT AUTO_INCREMENT,
     order_id            INT             NOT NULL,
     user_id             INT             NOT NULL,
