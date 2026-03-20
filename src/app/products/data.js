@@ -15,7 +15,7 @@ export const products = [
     price: 45,
     category: "Gardening",
     badge: "Best Seller",
-    image: "/images/seedling-pot.png",
+    image: "/images/seedling-pot.jpg",
   },
   {
     id: 2,
@@ -25,7 +25,7 @@ export const products = [
     price: 350,
     category: "Home & Decor",
     badge: "Trending",
-    image: "/images/doormat.png",
+    image: "/images/welcome-doormat.jpg",
   },
   {
     id: 3,
@@ -35,7 +35,7 @@ export const products = [
     price: 120,
     category: "Construction",
     badge: "",
-    image: "/images/rope.png",
+    image: "/images/rope.jpg",
   },
   {
     id: 4,
@@ -45,7 +45,7 @@ export const products = [
     price: 180,
     category: "Cleaning",
     badge: "New",
-    image: "/images/growing-medium.png",
+    image: "/images/growbags.jpg",
   },
   {
     id: 5,
@@ -55,7 +55,7 @@ export const products = [
     price: 85,
     category: "Cleaning",
     badge: "",
-    image: "/images/growing-medium.png",
+    image: "/images/brush.jpg",
   },
   {
     id: 6,
@@ -65,7 +65,7 @@ export const products = [
     price: 480,
     category: "Construction",
     badge: "",
-    image: "/images/growing-medium.png",
+    image: "/images/mat.jpg",
   },
   {
     id: 7,
@@ -75,7 +75,7 @@ export const products = [
     price: 180,
     category: "Gardening",
     badge: "Popular",
-    image: "/images/growing-medium.png",
+    image: "/images/hanging-basket.jpg",
   },
 
 
