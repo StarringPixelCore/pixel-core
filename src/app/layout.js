@@ -2,7 +2,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 
 export const metadata = {
-  title: "Pixel-Core",
+  title: "PixelCore's Cocoir Store",
   description: "Product page",
 };
 
