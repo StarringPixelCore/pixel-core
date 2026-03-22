@@ -4,12 +4,18 @@ import pool from "@/lib/db";
 export async function GET() {
   try {
     const [rows] = await pool.query(`
-      SELECT id, name, description, price, badge, category, image_url
+      SELECT id, name, description, price, category, image_url
       FROM products
       ORDER BY created_at DESC
     `);
 
-    return NextResponse.json({ products: rows });
+    // Add badge field for component compatibility
+    const products = rows.map(product => ({
+      ...product,
+      badge: ''
+    }));
+
+    return NextResponse.json({ products });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
