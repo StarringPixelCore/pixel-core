@@ -1,13 +1,38 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ProductCard from "@/components/ProductCard";
-import { categories, products } from "./data";
 import styles from "./products.module.css";
 
+const categories = [
+  "All",
+  "Gardening",
+  "Home & Decor",
+  "Construction",
+  "Cleaning",
+];
+
 export default function ProductsPage() {
+  const [products, setProducts] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All");
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch("/api/products", { cache: "no-store" });
+      const data = await res.json();
+      setProducts(data.products || []);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -16,11 +41,13 @@ export default function ProductsPage() {
 
       const matchesSearch =
         product.name.toLowerCase().includes(search.toLowerCase()) ||
-        product.description.toLowerCase().includes(search.toLowerCase());
+        (product.description || "")
+          .toLowerCase()
+          .includes(search.toLowerCase());
 
       return matchesCategory && matchesSearch;
     });
-  }, [activeCategory, search]);
+  }, [products, activeCategory, search]);
 
   return (
     <main className={styles.page}>
@@ -57,7 +84,9 @@ export default function ProductsPage() {
       </section>
 
       <section className={styles.grid}>
-        {filteredProducts.length > 0 ? (
+        {loading ? (
+          <p className={styles.noResults}>Loading products...</p>
+        ) : filteredProducts.length > 0 ? (
           filteredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))

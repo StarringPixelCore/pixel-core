@@ -23,7 +23,7 @@ CREATE TABLE products (
     name        VARCHAR(255)        NOT NULL,
     description TEXT,
     price       DECIMAL(10, 2)      NOT NULL,
-    stock       INT                 NOT NULL DEFAULT 0,
+    badge       VARCHAR(255)        NOT NULL DEFAULT '',
     category    VARCHAR(100),
     image_url   VARCHAR(255),
     created_at  DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -148,4 +148,64 @@ CREATE TABLE transactions (
         ON DELETE CASCADE,
     CONSTRAINT fk_txn_user  FOREIGN KEY (user_id)  REFERENCES users (id)
         ON DELETE CASCADE
+);
+
+-- for inserting data in the products table
+INSERT INTO products (name, description, price, badge, category, image_url)
+VALUES
+(
+    'Coir Seedling Pot',
+    'Biodegradable seedling pot made from compressed coconut coir fiber.',
+    45.00,
+    'Best Seller',
+    'Gardening',
+    '/images/seedling-pot.jpg'
+),
+(
+    'Coir Welcome Doormat',
+    'Durable natural coir doormat that keeps dirt and moisture at bay.',
+    350.00,
+    'Trending',
+    'Home & Decor',
+    '/images/welcome-doormat.jpg'
+),
+(
+    'Coconut Coir Rope (10m)',
+    'Strong, eco-friendly twisted rope ideal for crafts and construction.',
+    120.00,
+    '',
+    'Construction',
+    '/images/rope.jpg'
+),
+(
+    'Coir Growing Medium (5kg)',
+    'Premium coconut coir substrate for hydroponic and soil gardening.',
+    180.00,
+    'New',
+    'Gardening',
+    '/images/growbags.jpg'
+),
+(
+    'Natural Coir Scrub Brush',
+    'Eco-friendly scrub brush made from natural coconut coir bristles.',
+    85.00,
+    '',
+    'Cleaning',
+    '/images/brush.jpg'
+),
+(
+    'Erosion Control Coir Mat',
+    'Biodegradable coir mat designed to prevent soil erosion on slopes and embankments.',
+    480.00,
+    '',
+    'Construction',
+    '/images/coir-mat.jpg'
+),
+(
+    'Hanging Basket Liner',
+    'Natural coir liner for hanging baskets, providing excellent drainage and aeration for plants.',
+    180.00,
+    'Popular',
+    'Gardening',
+    '/images/hanging-pot.jpg'
 );
