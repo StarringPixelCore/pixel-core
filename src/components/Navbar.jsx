@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { ShoppingCart, User } from "lucide-react";
 
@@ -15,9 +16,9 @@ export default function Navbar() {
   const navigationLinks = [
     { name: "Home", href: "/" },
     { name: "Products", href: "/products" },
+    { name: "About Us", href: "/about-us" },
   ];
 
-  // Fetch cart count
   const fetchCartCount = async () => {
     try {
       const res = await fetch("/api/cart", { cache: "no-store" });
@@ -28,16 +29,12 @@ export default function Navbar() {
     }
   };
 
-  // Fetch current user on mount
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const res = await fetch("/api/auth/me");
         const data = await res.json();
-
-        if (data.authenticated) {
-          setUser(data.user);
-        }
+        if (data.authenticated) setUser(data.user);
       } catch (error) {
         console.error("Error fetching user:", error);
       } finally {
@@ -49,14 +46,11 @@ export default function Navbar() {
     fetchCartCount();
   }, [pathname]);
 
-  // Listen for cart updates
   useEffect(() => {
     const handleCartUpdated = () => {
       fetchCartCount();
     };
-
     window.addEventListener("cartUpdated", handleCartUpdated);
-
     return () => {
       window.removeEventListener("cartUpdated", handleCartUpdated);
     };
@@ -74,9 +68,19 @@ export default function Navbar() {
 
   return (
     <nav style={styles.nav}>
-      <div style={styles.logo}>temp navbar</div>
+      {/* Logo image + site name */}
+      <div style={styles.logoContainer}>
+        <Image
+          src="/images/logo.png" 
+          alt="Cocoir Logo"
+          width={67}
+          height={67}
+          style={{ borderRadius: "4px" }}
+        />
+        <span style={styles.siteName}>Cocoir</span>
+      </div>
 
-      {/* Left side navigation links */}
+      {/* Navigation links */}
       <div style={styles.leftLinks}>
         {navigationLinks.map((link) => (
           <Link
@@ -94,21 +98,17 @@ export default function Navbar() {
 
       {/* Right side - Cart and User/Login */}
       <div style={styles.rightLinks}>
-        {/* Cart Icon */}
         <Link href="/cart" style={styles.iconButton}>
           <ShoppingCart size={20} />
           {cartCount > 0 && <span style={styles.badge}>{cartCount}</span>}
         </Link>
 
-        {/* User Profile or Login */}
         {!loading && (
           <>
             {user ? (
-              <div style={styles.userMenu}>
-                <Link href="/profile" style={styles.iconButton} title="Profile">
-                  <User size={20} />
-                </Link>
-              </div>
+              <Link href="/profile" style={styles.iconButton} title="Profile">
+                <User size={20} />
+              </Link>
             ) : (
               <Link href="/login" style={styles.loginButton}>
                 Login
@@ -131,17 +131,22 @@ const styles = {
     backgroundColor: "#fff",
     gap: "20px",
   },
-  logo: {
+  logoContainer: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+  },
+  siteName: {
     fontSize: "20px",
     fontWeight: "700",
     color: "#8b5e3c",
-    minWidth: "120px",
   },
   leftLinks: {
     display: "flex",
-    gap: "12px",
+    gap: "16px",
     alignItems: "center",
     flex: 1,
+    marginLeft: "32px",
   },
   navLink: {
     textDecoration: "none",
@@ -176,10 +181,6 @@ const styles = {
     transition: "all 0.2s",
     cursor: "pointer",
     position: "relative",
-  },
-  userMenu: {
-    display: "flex",
-    alignItems: "center",
   },
   loginButton: {
     padding: "8px 24px",
