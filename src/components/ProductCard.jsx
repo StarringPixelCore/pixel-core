@@ -6,31 +6,54 @@ import styles from "@/app/products/products.module.css";
 
 export default function ProductCard({ product }) {
   const addToCart = async () => {
-    try {
-      const res = await fetch("/api/cart/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          productId: product.id,
-        }),
-      });
+  try {
+    const res = await fetch("/api/cart/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        productId: product.id,
+      }),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (!res.ok) {
-        alert(data.error || "Failed to add item to cart");
-        return;
-      }
-
-      window.dispatchEvent(new Event("cartUpdated"));
-      alert(`${product.name} added to cart`);
-    } catch (error) {
-      console.error("Add to cart error:", error);
-      alert("Something went wrong while adding to cart");
+    if (!res.ok) {
+      window.dispatchEvent(
+        new CustomEvent("showToast", {
+          detail: {
+            message: data.error || "Failed to add item to cart",
+            type: "error",
+          },
+        })
+      );
+      return;
     }
-  };
+
+    window.dispatchEvent(new Event("cartUpdated"));
+
+    window.dispatchEvent(
+      new CustomEvent("showToast", {
+        detail: {
+          message: `${product.name} added to cart`,
+          type: "success",
+        },
+      })
+    );
+  } catch (error) {
+    console.error("Add to cart error:", error);
+
+    window.dispatchEvent(
+      new CustomEvent("showToast", {
+        detail: {
+          message: "Something went wrong while adding to cart",
+          type: "error",
+        },
+      })
+    );
+  }
+};
 
   return (
     <div className={styles.card}>
