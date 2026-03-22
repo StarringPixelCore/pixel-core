@@ -167,7 +167,7 @@ VALUES
     350.00,
     'Trending',
     'Home & Decor',
-    '/images/welcome-doormat.jpg'
+    '/images/doormat.png'
 ),
 (
     'Coconut Coir Rope (10m)',
@@ -183,7 +183,7 @@ VALUES
     180.00,
     'New',
     'Gardening',
-    '/images/growbags.jpg'
+    '/images/growbags.png'
 ),
 (
     'Natural Coir Scrub Brush',
