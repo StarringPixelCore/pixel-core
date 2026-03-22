@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { validateLoginForm } from "@/lib/validation";
 
 export default function LoginPage() {
   const router = useRouter();
+  const [redirectTo, setRedirectTo] = useState("/");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
@@ -14,6 +15,14 @@ export default function LoginPage() {
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const r = params.get("redirect");
+    if (r && r.startsWith("/") && !r.startsWith("//")) {
+      setRedirectTo(r);
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -69,9 +78,8 @@ export default function LoginPage() {
       setSuccessMessage("Login successful! Redirecting...");
       setFormData({ email: "", password: "" });
 
-      // Redirect to home or dashboard after 2 seconds
       setTimeout(() => {
-        router.push("/");
+        router.push(redirectTo);
       }, 2000);
     } catch (error) {
       console.error("Login error:", error);
