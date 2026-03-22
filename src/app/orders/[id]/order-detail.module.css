@@ -1,0 +1,272 @@
+.page {
+  padding: 24px 22px 48px;
+  background: #f8f5f2;
+  min-height: 100vh;
+}
+
+.inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.backRow {
+  margin-bottom: 20px;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #8b6c57;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: #9b673e;
+}
+
+.title {
+  font-size: 2rem;
+  color: #2f1a0f;
+  margin: 0 0 6px 0;
+}
+
+.subId {
+  font-size: 0.95rem;
+  color: #8a6f5a;
+  margin-bottom: 20px;
+}
+
+.ref {
+  font-family: ui-monospace, monospace;
+  color: #5c4a3f;
+}
+
+.section {
+  border: 1px solid #ddd1c7;
+  border-radius: 16px;
+  background: #fffdfb;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #2f1a0f;
+  margin-bottom: 14px;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+
+.badgeOrder {
+  background: #f0e6dc;
+  color: #5c4030;
+  border-color: #ddd1c7;
+}
+
+.badgePay {
+  background: #e8f4ec;
+  color: #1e5f2a;
+  border-color: #c5e0cc;
+}
+
+.badgePayPending {
+  background: #fff8e6;
+  color: #8a6b00;
+  border-color: #f0e0b2;
+}
+
+.badgeCancelled {
+  background: #fce8e6;
+  color: #b42318;
+  border-color: #f5c4c1;
+}
+
+.metaGrid {
+  display: grid;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: #5c4a3f;
+}
+
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.metaLabel {
+  color: #8a6f5a;
+  font-weight: 500;
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.itemRow {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.itemImage {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  background: #fff;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.itemImagePlaceholder {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  background: #f0e6dc;
+  color: #8a6f5a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.itemInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemName {
+  font-weight: 600;
+  color: #2f1a0f;
+}
+
+.itemMeta {
+  font-size: 0.9rem;
+  color: #8a6f5a;
+  margin-top: 4px;
+}
+
+.itemLine {
+  font-weight: 600;
+  color: #9b673e;
+  white-space: nowrap;
+}
+
+.totals {
+  border-top: 1px dashed #ddd1c7;
+  margin-top: 8px;
+  padding-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  color: #5c4a3f;
+  font-size: 0.95rem;
+}
+
+.totalGrand {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #2f1a0f;
+  margin-top: 4px;
+}
+
+.notes {
+  font-size: 0.92rem;
+  color: #6f5c50;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.paymentGrid {
+  display: grid;
+  gap: 8px;
+  font-size: 0.92rem;
+  color: #5c4a3f;
+}
+
+.paymentRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.loadingBox,
+.errorBox {
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px 16px;
+  color: #8b6c57;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #eadfd6;
+  border-top-color: #9b673e;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.errorTitle {
+  color: #2f1a0f;
+  margin-bottom: 8px;
+}
+
+.browseBtn {
+  display: inline-flex;
+  margin-top: 16px;
+  background: #9b673e;
+  color: white;
+  border-radius: 999px;
+  padding: 12px 24px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.browseBtn:hover {
+  background: #855432;
+}
+
+@media (max-width: 600px) {
+  .title {
+    font-size: 1.65rem;
+  }
+}

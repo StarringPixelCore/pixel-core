@@ -227,6 +227,13 @@ export default function ProfilePage() {
         <div style={styles.header}>
           <h1 style={styles.heading}>My Profile</h1>
           <p style={styles.userRole}>Role: {user.role}</p>
+          {user.role === "Buyer" && (
+            <p style={styles.ordersLinkWrap}>
+              <Link href="/orders" style={styles.ordersLink}>
+                My Orders →
+              </Link>
+            </p>
+          )}
         </div>
 
         {successMessage && (
@@ -515,6 +522,15 @@ const styles = {
     fontSize: "14px",
     color: "#666",
     margin: "0",
+  },
+  ordersLinkWrap: {
+    margin: "12px 0 0 0",
+  },
+  ordersLink: {
+    fontSize: "14px",
+    color: "#8b5e3c",
+    fontWeight: "600",
+    textDecoration: "none",
   },
   sectionsContainer: {
     display: "flex",

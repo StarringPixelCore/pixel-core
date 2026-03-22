@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { ShoppingCart, User } from "lucide-react";
+import { Package, ShoppingCart, User } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -106,9 +106,23 @@ export default function Navbar() {
         {!loading && (
           <>
             {user ? (
-              <Link href="/profile" style={styles.iconButton} title="Profile">
-                <User size={20} />
-              </Link>
+              <>
+                {user.role === "Buyer" && (
+                  <Link
+                    href="/orders"
+                    style={{
+                      ...styles.iconButton,
+                      ...(pathname === "/orders" ? styles.iconButtonActive : {}),
+                    }}
+                    title="My Orders"
+                  >
+                    <Package size={20} />
+                  </Link>
+                )}
+                <Link href="/profile" style={styles.iconButton} title="Profile">
+                  <User size={20} />
+                </Link>
+              </>
             ) : (
               <Link href="/login" style={styles.loginButton}>
                 Login
@@ -181,6 +195,10 @@ const styles = {
     transition: "all 0.2s",
     cursor: "pointer",
     position: "relative",
+  },
+  iconButtonActive: {
+    backgroundColor: "#8b5e3c",
+    color: "#fff",
   },
   loginButton: {
     padding: "8px 24px",
