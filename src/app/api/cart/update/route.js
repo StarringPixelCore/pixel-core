@@ -1,13 +1,17 @@
 import { NextResponse } from "next/server";
 import pool from "@/lib/db";
+import { getSessionUser } from "@/lib/session";
 
 export async function PUT(req) {
   try {
+    const session = getSessionUser(req);
+    const userId = session?.userId ?? 1;
+
     const { itemId, action } = await req.json();
 
     const [rows] = await pool.query(
-      "SELECT * FROM cart_items WHERE id = ? LIMIT 1",
-      [itemId]
+      "SELECT ci.* FROM cart_items ci INNER JOIN cart c ON c.id = ci.cart_id WHERE ci.id = ? AND c.user_id = ? LIMIT 1",
+      [itemId, userId]
     );
 
     if (rows.length === 0) {

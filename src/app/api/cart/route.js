@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import pool from "@/lib/db";
+import { getSessionUser } from "@/lib/session";
 
-export async function GET() {
+export async function GET(req) {
   try {
-    const userId = 1; // temporary test user
+    const session = getSessionUser(req);
+    const userId = session?.userId ?? 1;
 
     const [cartRows] = await pool.query(
       "SELECT id FROM cart WHERE user_id = ? LIMIT 1",

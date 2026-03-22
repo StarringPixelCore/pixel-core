@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import pool from "@/lib/db";
+import { getSessionUser } from "@/lib/session";
 
 export async function POST(req) {
   try {
-    const userId = 1; // temporary until login is added
+    const session = getSessionUser(req);
+    const userId = session?.userId ?? 1;
     const { productId } = await req.json();
 
     if (!productId) {

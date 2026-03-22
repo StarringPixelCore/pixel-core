@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import pool from "@/lib/db";
+import { getSessionUser } from "@/lib/session";
 
-export async function DELETE() {
+export async function DELETE(req) {
   try {
-    const userId = 1;
+    const session = getSessionUser(req);
+    const userId = session?.userId ?? 1;
 
     const [cartRows] = await pool.query(
       "SELECT * FROM cart WHERE user_id = ? LIMIT 1",
