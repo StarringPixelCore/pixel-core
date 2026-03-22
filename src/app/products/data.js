@@ -65,7 +65,7 @@ export const products = [
     price: 480,
     category: "Construction",
     badge: "",
-    image: "/images/mat.jpg",
+    image: "/images/coir-mat.jpg",
   },
   {
     id: 7,
@@ -75,7 +75,7 @@ export const products = [
     price: 180,
     category: "Gardening",
     badge: "Popular",
-    image: "/images/hanging-basket.jpg",
+    image: "/images/hanging-pot.jpg",
   },
 
 
