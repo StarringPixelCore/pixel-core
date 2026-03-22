@@ -10,11 +10,23 @@ export default function Navbar() {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [cartCount, setCartCount] = useState(0);
 
   const navigationLinks = [
     { name: "Home", href: "/" },
     { name: "Products", href: "/products" },
   ];
+
+  // Fetch cart count
+  const fetchCartCount = async () => {
+    try {
+      const res = await fetch("/api/cart", { cache: "no-store" });
+      const data = await res.json();
+      setCartCount(data.count || 0);
+    } catch (error) {
+      console.error("Failed to fetch cart count:", error);
+    }
+  };
 
   // Fetch current user on mount
   useEffect(() => {
@@ -34,7 +46,21 @@ export default function Navbar() {
     };
 
     fetchUser();
+    fetchCartCount();
   }, [pathname]);
+
+  // Listen for cart updates
+  useEffect(() => {
+    const handleCartUpdated = () => {
+      fetchCartCount();
+    };
+
+    window.addEventListener("cartUpdated", handleCartUpdated);
+
+    return () => {
+      window.removeEventListener("cartUpdated", handleCartUpdated);
+    };
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -71,6 +97,7 @@ export default function Navbar() {
         {/* Cart Icon */}
         <Link href="/cart" style={styles.iconButton}>
           <ShoppingCart size={20} />
+          {cartCount > 0 && <span style={styles.badge}>{cartCount}</span>}
         </Link>
 
         {/* User Profile or Login */}
@@ -122,7 +149,9 @@ const styles = {
     fontWeight: "500",
     padding: "8px 16px",
     borderRadius: "8px",
-    transition: "all 0.2s",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   activeLink: {
     backgroundColor: "#8b5e3c",
@@ -146,6 +175,7 @@ const styles = {
     color: "#333",
     transition: "all 0.2s",
     cursor: "pointer",
+    position: "relative",
   },
   userMenu: {
     display: "flex",
@@ -161,5 +191,22 @@ const styles = {
     fontSize: "14px",
     transition: "all 0.2s",
     cursor: "pointer",
+  },
+  badge: {
+    position: "absolute",
+    top: "-6px",
+    right: "-6px",
+    backgroundColor: "#9b673e",
+    color: "#fff",
+    fontSize: "12px",
+    minWidth: "18px",
+    height: "18px",
+    borderRadius: "999px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "0 5px",
+    fontWeight: "700",
+    lineHeight: 1,
   },
 };

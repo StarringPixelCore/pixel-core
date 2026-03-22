@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata = {
-  title: "Pixel-Core",
+  title: "PixelCore's Cocoir Store",
   description: "Product page",
 };
 
