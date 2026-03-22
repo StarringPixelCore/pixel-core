@@ -1,15 +1,20 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ShoppingCart } from "lucide-react";
 import styles from "./product-detail.module.css";
+import useAuth from "@/hooks/useAuth"; // the hook we just created
 
 export default function ProductDetailActions({ product }) {
-  const router = useRouter();
   const [qty, setQty] = useState(1);
+  const { user, router } = useAuth();
 
   const addToCart = async () => {
+    if (!user) {
+      router.push("/login"); // redirect to login if not logged in
+      return;
+    }
+
     try {
       for (let i = 0; i < qty; i++) {
         const res = await fetch("/api/cart/add", {
@@ -46,7 +51,11 @@ export default function ProductDetailActions({ product }) {
   };
 
   const handleBuyNow = () => {
-    // Navigate to temporary checkout page
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+
     router.push("/checkout");
   };
 

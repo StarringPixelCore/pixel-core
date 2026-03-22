@@ -4,10 +4,18 @@ import Link from "next/link";
 import Image from "next/image";
 import { ShoppingCart } from "lucide-react";
 import styles from "@/app/products/products.module.css";
+import useAuth from "@/hooks/useAuth";
 
 export default function ProductCard({ product }) {
+  const { user, router } = useAuth();
+
   const handleAddToCart = async (e) => {
-    e.preventDefault(); // prevent navigating to detail page when clicking cart
+    e.preventDefault();
+
+    if (!user) {
+      router.push("/login");
+      return;
+    }
 
     try {
       const res = await fetch("/api/cart/add", {
@@ -27,8 +35,6 @@ export default function ProductCard({ product }) {
       }
 
       window.dispatchEvent(new Event("cartUpdated"));
-
-      // Show success toast
       window.dispatchEvent(
         new CustomEvent("showToast", {
           detail: { message: `${product.name} added to cart`, type: "success" },
@@ -67,11 +73,7 @@ export default function ProductCard({ product }) {
           <div className={styles.cardFooter}>
             <span className={styles.price}>₱{Number(product.price).toFixed(2)}</span>
 
-            <button
-              type="button"
-              className={styles.cartBtn}
-              onClick={(e) => handleAddToCart(e)}
-            >
+            <button className={styles.cartBtn} onClick={handleAddToCart}>
               <ShoppingCart size={16} />
             </button>
           </div>
