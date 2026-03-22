@@ -10,9 +10,13 @@ export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
 
   const fetchCart = async () => {
-    const res = await fetch("/api/cart");
-    const data = await res.json();
-    setCartItems(data.items || []);
+    try {
+      const res = await fetch("/api/cart", { cache: "no-store" });
+      const data = await res.json();
+      setCartItems(data.items || []);
+    } catch (error) {
+      console.error("Fetch cart error:", error);
+    }
   };
 
   useEffect(() => {
@@ -26,7 +30,8 @@ export default function CartPage() {
       body: JSON.stringify({ itemId, action }),
     });
 
-    fetchCart();
+    await fetchCart();
+    window.dispatchEvent(new Event("cartUpdated"));
   };
 
   const removeItem = async (itemId) => {
@@ -36,7 +41,8 @@ export default function CartPage() {
       body: JSON.stringify({ itemId }),
     });
 
-    fetchCart();
+    await fetchCart();
+    window.dispatchEvent(new Event("cartUpdated"));
   };
 
   const clearCart = async () => {
@@ -44,11 +50,12 @@ export default function CartPage() {
       method: "DELETE",
     });
 
-    fetchCart();
+    await fetchCart();
+    window.dispatchEvent(new Event("cartUpdated"));
   };
 
   const subtotal = cartItems.reduce(
-    (sum, item) => sum + Number(item.price) * item.quantity,
+    (sum, item) => sum + Number(item.price) * Number(item.quantity),
     0
   );
 
@@ -81,7 +88,7 @@ export default function CartPage() {
               <div className={styles.itemInfo}>
                 <div className={styles.imageBox}>
                   <Image
-                    src={item.image}
+                    src={item.image_url}
                     alt={item.name}
                     width={90}
                     height={90}

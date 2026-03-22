@@ -1,11 +1,37 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { ShoppingCart } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const [cartCount, setCartCount] = useState(0);
+
+  const fetchCartCount = async () => {
+    try {
+      const res = await fetch("/api/cart", { cache: "no-store" });
+      const data = await res.json();
+      setCartCount(data.count || 0);
+    } catch (error) {
+      console.error("Failed to fetch cart count:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCartCount();
+
+    const handleCartUpdated = () => {
+      fetchCartCount();
+    };
+
+    window.addEventListener("cartUpdated", handleCartUpdated);
+
+    return () => {
+      window.removeEventListener("cartUpdated", handleCartUpdated);
+    };
+  }, []);
 
   const links = [
     { name: "Home", href: "/" },
@@ -28,7 +54,14 @@ export default function Navbar() {
               ...(link.isCart ? styles.cartLink : {}),
             }}
           >
-            {link.isCart ? <ShoppingCart size={20} /> : link.name}
+            {link.isCart ? (
+              <>
+                <ShoppingCart size={20} />
+                {cartCount > 0 && <span style={styles.badge}>{cartCount}</span>}
+              </>
+            ) : (
+              link.name
+            )}
           </Link>
         ))}
       </div>
@@ -64,6 +97,7 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    position: "relative",
   },
   activeLink: {
     backgroundColor: "#8b5e3c",
@@ -74,5 +108,22 @@ const styles = {
     height: "42px",
     borderRadius: "50%",
     backgroundColor: "#f3e7dc",
+  },
+  badge: {
+    position: "absolute",
+    top: "-6px",
+    right: "-6px",
+    backgroundColor: "#9b673e",
+    color: "#fff",
+    fontSize: "12px",
+    minWidth: "18px",
+    height: "18px",
+    borderRadius: "999px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "0 5px",
+    fontWeight: "700",
+    lineHeight: 1,
   },
 };
