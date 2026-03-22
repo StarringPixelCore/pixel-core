@@ -16,7 +16,7 @@ export default function Navbar() {
   const navigationLinks = [
     { name: "Home", href: "/" },
     { name: "Products", href: "/products" },
-    { name: "About Us", href: "/about-us" },
+    { name: "About Us", href: "/about" },
   ];
 
   const fetchCartCount = async () => {
