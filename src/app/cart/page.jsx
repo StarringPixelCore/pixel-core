@@ -3,11 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ShoppingBag, Trash2 } from "lucide-react";
 import styles from "./cart.module.css";
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
+  const router = useRouter();
 
   const fetchCart = async () => {
     try {
@@ -54,11 +56,14 @@ export default function CartPage() {
     window.dispatchEvent(new Event("cartUpdated"));
   };
 
+  const handleCheckout = () => {
+    router.push("/checkout"); 
+  };
+
   const subtotal = cartItems.reduce(
     (sum, item) => sum + Number(item.price) * Number(item.quantity),
     0
   );
-
   const shipping = cartItems.length > 0 ? 50 : 0;
   const total = subtotal + shipping;
 
@@ -149,7 +154,9 @@ export default function CartPage() {
             <span>₱{total.toFixed(2)}</span>
           </div>
 
-          <button className={styles.checkoutBtn}>Proceed to Checkout</button>
+          <button className={styles.checkoutBtn} onClick={handleCheckout}>
+            Proceed to Checkout
+          </button>
         </div>
       </div>
     </main>

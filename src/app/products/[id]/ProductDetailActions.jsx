@@ -29,10 +29,7 @@ export default function ProductDetailActions({ product }) {
         }
       }
 
-      // Dispatch custom event to update cart icon if you have a listener
       window.dispatchEvent(new Event("cartUpdated"));
-
-      // Show success toast
       window.dispatchEvent(
         new CustomEvent("showToast", {
           detail: { message: `${product.name} added to cart`, type: "success" },
@@ -49,8 +46,8 @@ export default function ProductDetailActions({ product }) {
   };
 
   const handleBuyNow = () => {
-    addToCart(); // optionally add to cart first
-    router.push(`/checkout?productId=${product.id}&qty=${qty}`);
+    // Navigate to temporary checkout page
+    router.push("/checkout");
   };
 
   return (

@@ -5,7 +5,8 @@ import ToastProvider from "@/components/ToastProvider";
 
 export const metadata = {
   title: "PixelCore's Cocoir Store",
-  description: "A simple e-commerce app built with Next.js 13, showcasing a variety of products and a seamless shopping experience.",
+  description:
+    "A simple e-commerce app built with Next.js 13, showcasing a variety of products and a seamless shopping experience.",
 };
 
 export default function RootLayout({ children }) {
@@ -14,7 +15,8 @@ export default function RootLayout({ children }) {
       <body>
         <Navbar />
         <ToastProvider />
-        {children}
+        <main>{children}</main> 
+        <Footer />              
       </body>
     </html>
   );
