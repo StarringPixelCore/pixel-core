@@ -1,0 +1,275 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+.footer {
+  background-color: #2f1a0f;
+  color: #f8f5f2;
+  padding: 0;
+  margin-top: 0;
+  border-top: 2px solid #9b673e;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 60px 40px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  width: 100%;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Brand Section */
+.brandSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.logoPlaceholder {
+  font-size: 48px;
+  width: fit-content;
+  line-height: 1;
+}
+
+.logoImage {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.brandName {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+  color: #9b673e;
+}
+
+.tagline {
+  font-size: 14px;
+  font-weight: 600;
+  color: #9b673e;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.about {
+  font-size: 13px;
+  color: #ddd1c7;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Section Titles */
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  color: #9b673e;
+}
+
+/* Links */
+.linkList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.linkList li {
+  margin: 0;
+}
+
+.link {
+  color: #ddd1c7;
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.3s ease;
+}
+
+.link:hover {
+  color: #9b673e;
+}
+
+/* Contact Info */
+.contactInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contactInfo p {
+  font-size: 13px;
+  margin: 0;
+  color: #ddd1c7;
+  line-height: 1.6;
+}
+
+.contactInfo strong {
+  color: #9b673e;
+}
+
+/* Social Media */
+.socialMedia {
+  margin-top: 12px;
+}
+
+.socialTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9b673e;
+  margin: 0 0 8px 0;
+}
+
+.socialIcons {
+  display: flex;
+  gap: 12px;
+}
+
+.socialIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(155, 103, 62, 0.2);
+  color: #9b673e;
+  text-decoration: none;
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 1px solid #9b673e;
+}
+
+.socialIcon:hover {
+  background: #9b673e;
+  color: #f8f5f2;
+}
+
+/* Newsletter */
+.newsletterText {
+  font-size: 13px;
+  color: #ddd1c7;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.newsletterForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.emailInput {
+  padding: 12px 14px;
+  font-size: 13px;
+  border: 1px solid #9b673e;
+  border-radius: 6px;
+  background: transparent;
+  color: #f8f5f2;
+  font-family: "Poppins", sans-serif;
+  transition: all 0.3s ease;
+}
+
+.emailInput::placeholder {
+  color: #8a6f5a;
+}
+
+.emailInput:focus {
+  outline: none;
+  background: rgba(155, 103, 62, 0.1);
+  border-color: #ddd1c7;
+}
+
+.subscribeBtn {
+  padding: 12px 24px;
+  background: #9b673e;
+  color: #f8f5f2;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "Poppins", sans-serif;
+}
+
+.subscribeBtn:hover {
+  background: #8a5933;
+  transform: translateY(-2px);
+}
+
+/* Bottom Section */
+.bottomSection {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 24px 40px;
+  text-align: center;
+  margin: 0;
+}
+
+.disclaimer {
+  font-size: 12px;
+  color: #8a6f5a;
+  margin: 0 0 8px 0;
+}
+
+.copyright {
+  font-size: 12px;
+  color: #8a6f5a;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    padding: 48px 32px;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 40px 20px;
+  }
+
+  .footer {
+    border-top: 1px solid #9b673e;
+  }
+
+  .brandName {
+    font-size: 20px;
+  }
+
+  .tagline {
+    font-size: 13px;
+  }
+
+  .sectionTitle {
+    font-size: 14px;
+  }
+
+  .socialIcons {
+    gap: 10px;
+  }
+
+  .socialIcon {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .bottomSection {
+    padding: 20px 16px;
+  }
+}

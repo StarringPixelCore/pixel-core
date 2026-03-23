@@ -3,11 +3,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ShoppingCart } from "lucide-react";
+import { useState } from "react";
 import styles from "@/app/products/products.module.css";
 import useAuth from "@/hooks/useAuth";
 
 export default function ProductCard({ product }) {
   const { user, router } = useAuth();
+  const [isFeatured, setIsFeatured] = useState(product.isHomepageFeatured === 1);
+  const [isTogglingFeatured, setIsTogglingFeatured] = useState(false);
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
@@ -50,6 +53,44 @@ export default function ProductCard({ product }) {
     }
   };
 
+  const handleToggleFeatured = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    setIsTogglingFeatured(true);
+    try {
+      const res = await fetch("/api/products/toggle-featured", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: product.id, isFeatured: !isFeatured }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setIsFeatured(!isFeatured);
+        window.dispatchEvent(
+          new CustomEvent("showToast", {
+            detail: {
+              message: !isFeatured
+                ? "Product featured on homepage!"
+                : "Product removed from homepage",
+              type: "success",
+            },
+          })
+        );
+      }
+    } catch (error) {
+      console.error("Error toggling featured status:", error);
+      window.dispatchEvent(
+        new CustomEvent("showToast", {
+          detail: { message: "Failed to update featured status", type: "error" },
+        })
+      );
+    } finally {
+      setIsTogglingFeatured(false);
+    }
+  };
+
   return (
     <Link href={`/products/${product.id}`} className={styles.cardLink}>
       <div className={styles.card}>
@@ -61,6 +102,33 @@ export default function ProductCard({ product }) {
             height={300}
             className={styles.productImage}
           />
+          {/* Seller controls */}
+          {user?.role === "Seller" && (
+            <button
+              onClick={handleToggleFeatured}
+              disabled={isTogglingFeatured}
+              className={styles.featuredToggleBtn}
+              title={isFeatured ? "Remove from homepage" : "Add to homepage"}
+              style={{
+                position: "absolute",
+                top: "8px",
+                right: "8px",
+                background: isFeatured ? "#9b673e" : "rgba(255, 255, 255, 0.9)",
+                color: isFeatured ? "white" : "#9b673e",
+                border: isFeatured ? "none" : "2px solid #9b673e",
+                padding: "8px 12px",
+                borderRadius: "20px",
+                cursor: isTogglingFeatured ? "not-allowed" : "pointer",
+                fontSize: "18px",
+                fontWeight: "600",
+                opacity: isTogglingFeatured ? 0.6 : 1,
+                transition: "all 0.3s",
+                zIndex: 10,
+              }}
+            >
+              {isFeatured ? "⭐" : "☆"}
+            </button>
+          )}
         </div>
 
         <div className={styles.cardContent}>

@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f5f2;
+  padding: 20px;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+.formWrapper {
+  background: #fffdfb;
+  padding: 40px;
+  border-radius: 16px;
+  border: 1px solid #ddd1c7;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 900px;
+}
+
+.heading {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #2f1a0f;
+}
+
+.subheading {
+  font-size: 16px;
+  color: #8a6f5a;
+  margin-bottom: 24px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.formColumns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 12px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+@media (max-width: 768px) {
+  .formColumns {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .formWrapper {
+    padding: 24px;
+  }
+
+  .heading {
+    font-size: 24px;
+  }
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2f1a0f;
+}
+
+.input {
+  padding: 8px 10px;
+  font-size: 14px;
+  border: 1px solid #d8ccc2;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  background: #fff;
+  color: #2f1a0f;
+  transition: border-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #9b673e;
+  box-shadow: 0 0 0 2px rgba(155, 103, 62, 0.1);
+}
+
+.inputError {
+  border-color: #d32f2f;
+  background-color: #ffebee;
+}
+
+.fieldError {
+  font-size: 13px;
+  color: #d32f2f;
+  margin-top: 2px;
+}
+
+.errorMessage {
+  background-color: #ffebee;
+  color: #d32f2f;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  border-left: 3px solid #d32f2f;
+}
+
+.successMessage {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  border-left: 3px solid #2e7d32;
+}
+
+.button {
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  background: #9b673e;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+
+.button:hover:not(:disabled) {
+  background: #8a5933;
+}
+
+.buttonDisabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.loginLink {
+  font-size: 15px;
+  color: #8a6f5a;
+  margin-top: 16px;
+  text-align: center;
+}
+
+.link {
+  color: #9b673e;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: #8a5933;
+  text-decoration: underline;
+}

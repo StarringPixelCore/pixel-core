@@ -18,7 +18,7 @@ export async function POST() {
         price: 350.00,
         badge: 'Trending',
         category: 'Home & Decor',
-        image_url: '/images/welcome-doormat.jpg'
+        image_url: '/images/doormat.png'
       },
       {
         name: 'Coconut Coir Rope (10m)',
@@ -34,7 +34,7 @@ export async function POST() {
         price: 180.00,
         badge: 'New',
         category: 'Gardening',
-        image_url: '/images/growbags.jpg'
+        image_url: '/images/growbags.png'
       },
       {
         name: 'Natural Coir Scrub Brush',
