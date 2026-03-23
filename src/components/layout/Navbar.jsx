@@ -159,7 +159,10 @@ export default function Navbar() {
                 )}
                 <Link
                   href="/profile"
-                  style={styles.iconButton}
+                  style={{
+                    ...styles.iconButton,
+                    ...(pathname === "/profile" ? styles.iconButtonActive : {}),
+                  }}
                   title="Profile"
                 >
                   <User size={20} />
