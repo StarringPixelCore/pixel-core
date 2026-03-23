@@ -69,7 +69,7 @@ export default function Navbar() {
   return (
     <nav style={styles.nav}>
       {/* Logo image + site name */}
-      <div style={styles.logoContainer}>
+      <Link href="/" style={styles.logoContainer}>
         <Image
           src="/images/logo.png"
           alt="Cocoir Logo"
@@ -78,7 +78,7 @@ export default function Navbar() {
           style={{ borderRadius: "4px" }}
         />
         <span style={styles.siteName}>Cocoir</span>
-      </div>
+      </Link>
 
       {/* Navigation links */}
       <div style={styles.leftLinks}>
