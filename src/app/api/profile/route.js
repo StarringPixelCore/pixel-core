@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import pool from "@/lib/db";
 import { sendAccountDeletionEmail } from "@/lib/email";
-import { validatePasswordChange, validateAddress, validateMobileNumber } from "@/lib/validation";
+import { validatePasswordChange, validateAddress, validateMobileNumber, validateFirstName, validateLastName } from "@/lib/validation";
 
 // Check if user is authenticated
 function getSessionUser(req) {
@@ -62,16 +62,16 @@ export async function PUT(req) {
     const errors = {};
 
     // Validate fields
-    if (firstName) {
-      errors.firstName = firstName.trim().length < 2 ? "First Name must be at least 2 characters" : "";
+    if (firstName !== undefined) {
+      errors.firstName = validateFirstName(firstName);
     }
-    if (lastName) {
-      errors.lastName = lastName.trim().length < 2 ? "Last Name must be at least 2 characters" : "";
+    if (lastName !== undefined) {
+      errors.lastName = validateLastName(lastName);
     }
-    if (address) {
+    if (address !== undefined) {
       errors.address = validateAddress(address);
     }
-    if (mobileNumber) {
+    if (mobileNumber !== undefined) {
       errors.mobileNumber = validateMobileNumber(mobileNumber);
     }
 

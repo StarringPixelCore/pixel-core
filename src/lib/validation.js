@@ -21,13 +21,19 @@ export const validateConfirmPassword = (password, confirmPassword) => {
 
 export const validateFirstName = (firstName) => {
   if (!firstName) return "First Name is required";
-  if (firstName.trim().length < 2) return "First Name must be at least 2 characters";
+  const trimmed = firstName.trim();
+  if (trimmed.length < 2) return "First Name must be at least 2 characters";
+  if (!/^[A-Z]/.test(trimmed)) return "First Name must start with a capital letter";
+  if (/\d/.test(trimmed)) return "First Name cannot contain numbers";
   return "";
 };
 
 export const validateLastName = (lastName) => {
   if (!lastName) return "Last Name is required";
-  if (lastName.trim().length < 2) return "Last Name must be at least 2 characters";
+  const trimmed = lastName.trim();
+  if (trimmed.length < 2) return "Last Name must be at least 2 characters";
+  if (!/^[A-Z]/.test(trimmed)) return "Last Name must start with a capital letter";
+  if (/\d/.test(trimmed)) return "Last Name cannot contain numbers";
   return "";
 };
 
