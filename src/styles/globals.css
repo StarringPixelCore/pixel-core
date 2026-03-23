@@ -19,7 +19,7 @@ body {
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: #f7f4f1; /* replaced var(--background) */
   font-family: 'Poppins', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
