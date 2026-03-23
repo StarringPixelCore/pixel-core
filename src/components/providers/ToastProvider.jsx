@@ -6,6 +6,7 @@ export default function ToastProvider() {
   const [toast, setToast] = useState({
     show: false,
     message: "",
+    title: "",
     type: "success",
   });
 
@@ -13,11 +14,12 @@ export default function ToastProvider() {
     let timer;
 
     const handleToast = (event) => {
-      const { message, type = "success" } = event.detail || {};
+      const { message, title, type = "success" } = event.detail || {};
 
       setToast({
         show: true,
         message: message || "Done",
+        title: title,
         type,
       });
 
@@ -49,7 +51,7 @@ export default function ToastProvider() {
 
         <div>
           <p style={styles.title}>
-            {toast.type === "error" ? "Something went wrong" : "Added to cart"}
+            {toast.title || (toast.type === "error" ? "Something went wrong" : "Added to cart")}
           </p>
           <p style={styles.message}>{toast.message}</p>
         </div>

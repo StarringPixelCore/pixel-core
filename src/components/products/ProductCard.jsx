@@ -71,9 +71,10 @@ export default function ProductCard({ product }) {
         window.dispatchEvent(
           new CustomEvent("showToast", {
             detail: {
+              title: !isFeatured ? "Featured" : "Removed from Featured",
               message: !isFeatured
                 ? "Product featured on homepage!"
-                : "Product removed from homepage",
+                : "Product removed from homepage!",
               type: "success",
             },
           })

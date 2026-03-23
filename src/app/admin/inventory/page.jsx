@@ -240,7 +240,8 @@ export default function SellerInventoryPage() {
       window.dispatchEvent(
         new CustomEvent("showToast", {
           detail: {
-            message: nextEnabled === 1 ? "Product enabled" : "Product disabled",
+            title: nextEnabled === 1 ? "Product Enabled" : "Product Disabled",
+            message: nextEnabled === 1 ? "Successfully enabled product!" : "Successfully disabled product!",
             type: "success",
           },
         })
@@ -256,7 +257,7 @@ export default function SellerInventoryPage() {
   const emptyStateText = useMemo(() => {
     if (loadingProducts) return "";
     if (error) return "";
-    return "No products yet. Use “Add product” to create your first inventory item.";
+    return "No products yet. Add product to create your first inventory item.";
   }, [loadingProducts, error]);
 
   if (loading) {

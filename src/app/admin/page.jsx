@@ -61,9 +61,38 @@ export default function AdminPage() {
               : p
           )
         );
+
+        window.dispatchEvent(
+          new CustomEvent("showToast", {
+            detail: {
+              title: !currentStatus ? "Featured" : "Removed from Featured",
+              message: !currentStatus
+                ? "Product featured on homepage"
+                : "Product removed from homepage",
+              type: "success",
+            },
+          })
+        );
+      } else {
+        window.dispatchEvent(
+          new CustomEvent("showToast", {
+            detail: {
+              message: data.message || "Failed to update featured status",
+              type: "error",
+            },
+          })
+        );
       }
     } catch (error) {
       console.error("Error toggling featured status:", error);
+      window.dispatchEvent(
+        new CustomEvent("showToast", {
+          detail: {
+            message: "Failed to update featured status",
+            type: "error",
+          },
+        })
+      );
     } finally {
       setToggleStates((prev) => ({ ...prev, [productId]: false }));
     }
