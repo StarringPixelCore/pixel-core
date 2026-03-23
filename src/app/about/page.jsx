@@ -118,23 +118,21 @@ export default function AboutPage() {
 
         <div className={styles.companyInfo}>
           <span className={styles.sectionTag}>Who We Are</span>
-          <h2>CoCoir Philippines</h2>
+          <h2>Pixelcore</h2>
           <p>
-            CoCoir is a concept brand centered on sustainability, creativity, and
-            local value. By highlighting products made from coconut coir, we aim
-            to present practical alternatives that are both environmentally
-            responsible and visually appealing.
+            We are a student-led company dedicated to creating amazing website design. Our mission is to provide high-quality digital solutions that meet the needs of our clients.
+            We are 3rd year college students from FEU Institute of Technology taking up Bachelor of Science in Information Technology. We are passionate about web development and design, 
+            and we strive to deliver exceptional results that exceed our clients' expectations.
           </p>
           <p>
-            Our goal is to inspire more people to appreciate natural materials and
-            recognize how innovation can transform simple resources into products
-            with real purpose.
+            Our goal is to create websites that are not only visually appealing but also functional and user-friendly.
+            We believe that a great website can help businesses grow and succeed in today's digital world, and we are committed to helping our clients achieve their goals through our services.
           </p>
 
           <div className={styles.companyHighlights}>
             <div className={styles.highlightItem}>
               <ShieldCheck size={18} />
-              <span>Sustainable product focus</span>
+              <span>Secure Information</span>
             </div>
             <div className={styles.highlightItem}>
               <Users size={18} />
