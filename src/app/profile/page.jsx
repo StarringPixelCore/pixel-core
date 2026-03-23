@@ -11,6 +11,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [changingPassword, setChangingPassword] = useState(false);
+  const [uploadingPicture, setUploadingPicture] = useState(false);
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -214,6 +215,46 @@ export default function ProfilePage() {
     }
   };
 
+  const handleProfilePictureUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingPicture(true);
+    setErrors({});
+    setSuccessMessage("");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/profile/upload-picture", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setErrors({ picture: data.error || "Failed to upload profile picture" });
+        setUploadingPicture(false);
+        return;
+      }
+
+      setUser((prev) => ({
+        ...prev,
+        profilePicture: data.profilePicture,
+      }));
+
+      setSuccessMessage("Profile picture updated successfully!");
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (error) {
+      console.error("Error uploading picture:", error);
+      setErrors({ picture: "Failed to upload profile picture" });
+    } finally {
+      setUploadingPicture(false);
+    }
+  };
+
   if (loading) {
     return <main className={styles.container}>Loading...</main>;
   }
@@ -232,30 +273,55 @@ export default function ProfilePage() {
         </div>
 
         <div className={styles.header}>
-          <h1 className={styles.heading}>{user.firstName} {user.lastName}</h1>
-          {user.role === "Buyer" && (
-            <p className={styles.ordersLinkWrap}>
-              <Link href="/orders" className={styles.ordersLink}>
-                My Orders →
-              </Link>
-            </p>
-          )}
-          {user.role === "Seller" && (
-            <div className={styles.sellerLinks}>
-              <Link href="/admin/orders" className={styles.ordersLink}>
-                Manage Orders →
-              </Link>
-              <Link href="/products" className={styles.ordersLink}>
-                My Products →
-              </Link>
+          <div className={styles.headerLeft}>
+            <h1 className={styles.heading}>{user.firstName} {user.lastName}</h1>
+            {user.role === "Buyer" && (
+              <p className={styles.ordersLinkWrap}>
+                <Link href="/orders" className={styles.ordersLink}>
+                  My Orders →
+                </Link>
+              </p>
+            )}
+            {user.role === "Seller" && (
+              <div className={styles.sellerLinks}>
+                <Link href="/admin/orders" className={styles.ordersLink}>
+                  Manage Orders →
+                </Link>
+                <Link href="/products" className={styles.ordersLink}>
+                  My Products →
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Profile Picture Section */}
+          <div className={styles.profilePictureSection}>
+            <img
+              src={user.profilePicture ? user.profilePicture : "/images/default.jpg"}
+              alt={`${user.firstName} ${user.lastName}`}
+              className={styles.profilePicture}
+            />
+            <div className={styles.uploadPictureContainer}>
+              <label htmlFor="picture-upload" className={styles.uploadButton}>
+                {uploadingPicture ? "Uploading..." : "✏️"}
+              </label>
+              <input
+                id="picture-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleProfilePictureUpload}
+                disabled={uploadingPicture}
+                style={{ display: "none" }}
+              />
             </div>
-          )}
+          </div>
         </div>
 
         {successMessage && (
           <div className={styles.successMessage}>{successMessage}</div>
         )}
         {errors.form && <div className={styles.errorMessage}>{errors.form}</div>}
+        {errors.picture && <div className={styles.errorMessage}>{errors.picture}</div>}
 
         <div className={styles.sectionsContainer}>
           {/* User Information Section */}

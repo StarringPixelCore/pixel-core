@@ -30,6 +30,12 @@ export async function GET(req) {
 
     const user = users[0];
 
+    const normalizedProfilePicture = user.profile_picture
+      ? user.profile_picture === 'default.jpg' || user.profile_picture === 'public/images/default.jpg'
+        ? '/images/default.jpg'
+        : user.profile_picture
+      : '/images/default.jpg';
+
     return NextResponse.json({
       authenticated: true,
       user: {
@@ -40,7 +46,7 @@ export async function GET(req) {
         address: user.address,
         mobileNumber: user.mobile_number,
         role: user.role,
-        profilePicture: user.profile_picture,
+        profilePicture: normalizedProfilePicture,
       },
     }, { status: 200 });
   } catch (error) {

@@ -22,9 +22,69 @@
 }
 
 .header {
-  margin-bottom: 30px;
-  border-bottom: 2px solid #ddd1c7;
-  padding-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.headerLeft {
+  flex: 1;
+}
+
+.headerLeft {
+  flex: 1;
+}
+
+.profilePictureSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.profilePicture {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #9b673e;
+  flex-shrink: 0;
+}
+
+.uploadPictureContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.uploadButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f3e7dc;
+  color: #9b673e;
+  border: 2px solid #9b673e;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.uploadButton:hover {
+  background: #9b673e;
+  color: #fff;
+}
+
+.uploadButton:disabled {
+  background: #d9cec4;
+  border-color: #d9cec4;
+  cursor: not-allowed;
+  color: #8b6c57;
 }
 
 .heading {
