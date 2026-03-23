@@ -213,8 +213,9 @@
 
 .teamGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  grid-template-columns: repeat(3, minmax(220px, 280px));
+  justify-content: center;
+  gap: 20px;
 }
 
 .memberCard {
@@ -247,28 +248,28 @@
 }
 
 .memberContent {
-  padding: 20px;
+  padding: 16px;
 }
 
 .memberContent h3 {
   margin: 0 0 8px;
-  font-size: 1.25rem;
+  font-size: 1.08rem;
   color: #2f1a0f;
   font-weight: 700;
 }
 
 .memberRole {
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   color: #9b673e;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .memberDescription {
   margin: 0;
   color: #6f5c50;
-  line-height: 1.7;
-  font-size: 0.95rem;
+  line-height: 1.6;
+  font-size: 0.9rem;
 }
 
 .sourcesCard {
@@ -292,7 +293,7 @@
 @media (max-width: 1100px) {
   .cards,
   .teamGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(220px, 280px));
   }
 
   .companySection {
@@ -329,6 +330,7 @@
   .cards,
   .teamGrid {
     grid-template-columns: 1fr;
+    justify-content: stretch;
   }
 
   .companyInfo,
