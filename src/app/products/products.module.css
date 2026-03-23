@@ -132,6 +132,12 @@
   margin-bottom: 12px;
 }
 
+.badgePlaceholder {
+  display: inline-block;
+  height: 20px;
+  margin-bottom: 12px;
+}
+
 .productTitle {
   font-size: 1.1rem;
   color: #3b2416;

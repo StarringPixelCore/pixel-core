@@ -133,7 +133,10 @@ export default function ProductCard({ product }) {
         </div>
 
         <div className={styles.cardContent}>
-          {product.badge && <span className={styles.badge}>{product.badge}</span>}
+          {product.badge 
+            ? <span className={styles.badge}>{product.badge}</span>
+            : <span className={styles.badgePlaceholder} />
+          }
 
           <h2 className={styles.productTitle}>{product.name}</h2>
 
