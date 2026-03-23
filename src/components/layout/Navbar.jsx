@@ -71,7 +71,7 @@ export default function Navbar() {
       {/* Logo image + site name */}
       <Link href="/" style={styles.logoContainer}>
         <Image
-          src="/images/logo.png"
+          src="/images/cocoir_logo.png"
           alt="Cocoir Logo"
           width={67}
           height={67}
