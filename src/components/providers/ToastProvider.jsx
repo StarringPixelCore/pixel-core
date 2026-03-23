@@ -45,9 +45,7 @@ export default function ToastProvider() {
           ...(toast.type === "error" ? styles.error : styles.success),
         }}
       >
-        <div style={styles.icon}>
-          {toast.type === "error" ? "!" : "✓"}
-        </div>
+        <div style={styles.icon}>{toast.type === "error" ? "!" : "✓"}</div>
 
         <div>
           <p style={styles.title}>

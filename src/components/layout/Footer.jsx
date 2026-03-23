@@ -22,7 +22,8 @@ export default function Footer() {
             <h3 className={styles.brandName}>PixelCore</h3>
             <p className={styles.tagline}>Natural. Sustainable. Handcrafted.</p>
             <p className={styles.about}>
-              Transforming coconut fiber into premium, eco-friendly products for sustainable living.
+              Transforming coconut fiber into premium, eco-friendly products for
+              sustainable living.
             </p>
           </div>
         </div>
@@ -60,7 +61,10 @@ export default function Footer() {
           <div className={styles.contactInfo}>
             <p>
               <strong>Email:</strong>{" "}
-              <a href="mailto:starringpixelcore@gmail.com" className={styles.link}>
+              <a
+                href="mailto:starringpixelcore@gmail.com"
+                className={styles.link}
+              >
                 starringpixelcore@gmail.com
               </a>
             </p>
@@ -93,7 +97,9 @@ export default function Footer() {
         {/* Section 4: Newsletter */}
         <div className={styles.section}>
           <h4 className={styles.sectionTitle}>Stay Updated</h4>
-          <p className={styles.newsletterText}>Stay in the loop with our latest products and updates</p>
+          <p className={styles.newsletterText}>
+            Stay in the loop with our latest products and updates
+          </p>
           <form className={styles.newsletterForm}>
             <input
               type="email"
@@ -113,9 +119,7 @@ export default function Footer() {
         <p className={styles.disclaimer}>
           For educational purposes only. No copyright infringement intended.
         </p>
-        <p className={styles.copyright}>
-          © 2025 PixelCore. All rights reserved.
-        </p>
+        <p className={styles.copyright}>© 2025 PixelCore. All rights reserved.</p>
       </div>
     </footer>
   );

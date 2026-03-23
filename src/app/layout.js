@@ -1,7 +1,7 @@
-import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import ToastProvider from "@/components/ToastProvider";
+import "../styles/globals.css";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import ToastProvider from "@/components/providers/ToastProvider";
 
 export const metadata = {
   title: "PixelCore's Cocoir Store",

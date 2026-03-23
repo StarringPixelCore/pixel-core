@@ -71,7 +71,7 @@ export default function Navbar() {
       {/* Logo image + site name */}
       <div style={styles.logoContainer}>
         <Image
-          src="/images/logo.png" 
+          src="/images/logo.png"
           alt="Cocoir Logo"
           width={67}
           height={67}
@@ -112,14 +112,20 @@ export default function Navbar() {
                     href="/orders"
                     style={{
                       ...styles.iconButton,
-                      ...(pathname === "/orders" ? styles.iconButtonActive : {}),
+                      ...(pathname === "/orders"
+                        ? styles.iconButtonActive
+                        : {}),
                     }}
                     title="My Orders"
                   >
                     <Package size={20} />
                   </Link>
                 )}
-                <Link href="/profile" style={styles.iconButton} title="Profile">
+                <Link
+                  href="/profile"
+                  style={styles.iconButton}
+                  title="Profile"
+                >
                   <User size={20} />
                 </Link>
               </>

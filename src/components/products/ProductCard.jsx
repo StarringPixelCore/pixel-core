@@ -102,6 +102,7 @@ export default function ProductCard({ product }) {
             height={300}
             className={styles.productImage}
           />
+
           {/* Seller controls */}
           {user?.role === "Seller" && (
             <button
