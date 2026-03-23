@@ -155,7 +155,7 @@ export default function ManageOrdersPage() {
       setOrder(data.order);
       window.dispatchEvent(
         new CustomEvent("showToast", {
-          detail: { message: "Order updated successfully", type: "success" },
+          detail: { title: "Status Updated", message: "Order status updated successfully!", type: "success" },
         })
       );
     } catch (e) {
