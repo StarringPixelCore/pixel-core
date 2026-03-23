@@ -4,19 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
 import styles from "./reports.module.css";
-
-function formatCurrency(value) {
-  const n = Number(value);
-  if (!Number.isFinite(n)) return "₱0.00";
-  return `₱${n.toFixed(2)}`;
-}
-
-function formatDateRange(startIso, endIso) {
-  if (!startIso || !endIso) return "";
-  const start = new Date(startIso);
-  const end = new Date(endIso);
-  return `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
-}
+import { formatCurrency } from "@/utils/formatters";
 
 export default function SellerReportsPage() {
   const { user, router, loading } = useAuth();

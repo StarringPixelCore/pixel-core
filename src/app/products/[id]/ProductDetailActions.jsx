@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ShoppingCart } from "lucide-react";
 import styles from "./product-detail.module.css";
 import useAuth from "@/hooks/useAuth"; // the hook we just created
+import { notifyCartUpdated, showToast } from "@/utils/notifications";
 
 export default function ProductDetailActions({ product }) {
   const [qty, setQty] = useState(1);
@@ -25,28 +26,16 @@ export default function ProductDetailActions({ product }) {
         const data = await res.json();
 
         if (!res.ok) {
-          window.dispatchEvent(
-            new CustomEvent("showToast", {
-              detail: { message: data.error || "Failed to add item", type: "error" },
-            })
-          );
+          showToast({ message: data.error || "Failed to add item", type: "error" });
           return;
         }
       }
 
-      window.dispatchEvent(new Event("cartUpdated"));
-      window.dispatchEvent(
-        new CustomEvent("showToast", {
-          detail: { message: `${product.name} added to cart`, type: "success" },
-        })
-      );
+      notifyCartUpdated();
+      showToast({ message: `${product.name} added to cart`, type: "success" });
     } catch (error) {
       console.error(error);
-      window.dispatchEvent(
-        new CustomEvent("showToast", {
-          detail: { message: "Something went wrong", type: "error" },
-        })
-      );
+      showToast({ message: "Something went wrong", type: "error" });
     }
   };
 

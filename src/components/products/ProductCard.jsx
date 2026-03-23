@@ -6,6 +6,9 @@ import { ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import styles from "@/app/products/products.module.css";
 import useAuth from "@/hooks/useAuth";
+import { toggleFeaturedProduct } from "@/utils/featured";
+import { formatCurrency } from "@/utils/formatters";
+import { notifyCartUpdated, showToast } from "@/utils/notifications";
 
 export default function ProductCard({ product }) {
   const { user, router } = useAuth();
@@ -29,27 +32,15 @@ export default function ProductCard({ product }) {
       const data = await res.json();
 
       if (!res.ok) {
-        window.dispatchEvent(
-          new CustomEvent("showToast", {
-            detail: { message: data.error || "Failed to add item", type: "error" },
-          })
-        );
+        showToast({ message: data.error || "Failed to add item", type: "error" });
         return;
       }
 
-      window.dispatchEvent(new Event("cartUpdated"));
-      window.dispatchEvent(
-        new CustomEvent("showToast", {
-          detail: { message: `${product.name} added to cart`, type: "success" },
-        })
-      );
+      notifyCartUpdated();
+      showToast({ message: `${product.name} added to cart`, type: "success" });
     } catch (err) {
       console.error(err);
-      window.dispatchEvent(
-        new CustomEvent("showToast", {
-          detail: { message: "Something went wrong", type: "error" },
-        })
-      );
+      showToast({ message: "Something went wrong", type: "error" });
     }
   };
 
@@ -59,34 +50,21 @@ export default function ProductCard({ product }) {
 
     setIsTogglingFeatured(true);
     try {
-      const res = await fetch("/api/products/toggle-featured", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: product.id, isFeatured: !isFeatured }),
-      });
-
-      const data = await res.json();
-      if (data.success) {
+      const nextStatus = !isFeatured;
+      const { ok } = await toggleFeaturedProduct(product.id, nextStatus);
+      if (ok) {
         setIsFeatured(!isFeatured);
-        window.dispatchEvent(
-          new CustomEvent("showToast", {
-            detail: {
-              title: !isFeatured ? "Featured" : "Removed from Featured",
-              message: !isFeatured
-                ? "Product featured on homepage!"
-                : "Product removed from homepage!",
-              type: "success",
-            },
-          })
-        );
+        showToast({
+          title: !isFeatured ? "Featured" : "Removed from Featured",
+          message: !isFeatured
+            ? "Product featured on homepage!"
+            : "Product removed from homepage!",
+          type: "success",
+        });
       }
     } catch (error) {
       console.error("Error toggling featured status:", error);
-      window.dispatchEvent(
-        new CustomEvent("showToast", {
-          detail: { message: "Failed to update featured status", type: "error" },
-        })
-      );
+      showToast({ message: "Failed to update featured status", type: "error" });
     } finally {
       setIsTogglingFeatured(false);
     }
@@ -144,7 +122,7 @@ export default function ProductCard({ product }) {
           <p className={styles.productDesc}>{product.description}</p>
 
           <div className={styles.cardFooter}>
-            <span className={styles.price}>₱{Number(product.price).toFixed(2)}</span>
+            <span className={styles.price}>{formatCurrency(product.price)}</span>
 
             <button className={styles.cartBtn} onClick={handleAddToCart}>
               <ShoppingCart size={16} />

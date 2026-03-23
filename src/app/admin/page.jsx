@@ -3,6 +3,35 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
+import { toggleFeaturedProduct } from "@/utils/featured";
+import { formatCurrency, isEnabledFlag } from "@/utils/formatters";
+import { showToast } from "@/utils/notifications";
+
+const navLinkStyle = {
+  display: "inline-block",
+  padding: "10px 18px",
+  borderRadius: 999,
+  fontWeight: 700,
+  textDecoration: "none",
+};
+
+const sellerLinks = [
+  {
+    href: "/admin/orders",
+    label: "Manage Orders",
+    style: { ...navLinkStyle, backgroundColor: "#9b673e", color: "white" },
+  },
+  {
+    href: "/admin/inventory",
+    label: "Manage Inventory",
+    style: { ...navLinkStyle, backgroundColor: "#e9dfd6", color: "#3f2819" },
+  },
+  {
+    href: "/admin/reports",
+    label: "Reports",
+    style: { ...navLinkStyle, backgroundColor: "#e9dfd6", color: "#3f2819" },
+  },
+];
 
 export default function AdminPage() {
   const { user } = useAuth();
@@ -43,56 +72,39 @@ export default function AdminPage() {
   const handleToggleFeatured = async (productId, currentStatus) => {
     setToggleStates((prev) => ({ ...prev, [productId]: true }));
     try {
-      const res = await fetch("/api/products/toggle-featured", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId, isFeatured: !currentStatus }),
-      });
-
-      const data = await res.json();
-      if (data.success) {
+      const nextStatus = !currentStatus;
+      const { ok, data } = await toggleFeaturedProduct(productId, nextStatus);
+      if (ok) {
         setProducts((prev) =>
           prev.map((p) =>
             p.id === productId
               ? {
                   ...p,
-                  isHomepageFeatured: !currentStatus,
+                  isHomepageFeatured: nextStatus,
                 }
               : p
           )
         );
 
-        window.dispatchEvent(
-          new CustomEvent("showToast", {
-            detail: {
-              title: !currentStatus ? "Featured" : "Removed from Featured",
-              message: !currentStatus
-                ? "Product featured on homepage"
-                : "Product removed from homepage",
-              type: "success",
-            },
-          })
-        );
+        showToast({
+          title: !currentStatus ? "Featured" : "Removed from Featured",
+          message: !currentStatus
+            ? "Product featured on homepage"
+            : "Product removed from homepage",
+          type: "success",
+        });
       } else {
-        window.dispatchEvent(
-          new CustomEvent("showToast", {
-            detail: {
-              message: data.message || "Failed to update featured status",
-              type: "error",
-            },
-          })
-        );
+        showToast({
+          message: data.message || "Failed to update featured status",
+          type: "error",
+        });
       }
     } catch (error) {
       console.error("Error toggling featured status:", error);
-      window.dispatchEvent(
-        new CustomEvent("showToast", {
-          detail: {
-            message: "Failed to update featured status",
-            type: "error",
-          },
-        })
-      );
+      showToast({
+        message: "Failed to update featured status",
+        type: "error",
+      });
     } finally {
       setToggleStates((prev) => ({ ...prev, [productId]: false }));
     }
@@ -111,54 +123,13 @@ export default function AdminPage() {
     <div style={{ padding: "40px", maxWidth: "1000px", margin: "0 auto" }}>
       {user?.role === "Seller" && (
         <>
-          <div style={{ marginBottom: 18 }}>
-            <Link
-              href="/admin/orders"
-              style={{
-                display: "inline-block",
-                backgroundColor: "#9b673e",
-                color: "white",
-                padding: "10px 18px",
-                borderRadius: 999,
-                fontWeight: 700,
-                textDecoration: "none",
-              }}
-            >
-              Manage Orders
-            </Link>
-          </div>
-          <div style={{ marginBottom: 18 }}>
-            <Link
-              href="/admin/inventory"
-              style={{
-                display: "inline-block",
-                backgroundColor: "#e9dfd6",
-                color: "#3f2819",
-                padding: "10px 18px",
-                borderRadius: 999,
-                fontWeight: 700,
-                textDecoration: "none",
-              }}
-            >
-              Manage Inventory
-            </Link>
-          </div>
-          <div style={{ marginBottom: 18 }}>
-            <Link
-              href="/admin/reports"
-              style={{
-                display: "inline-block",
-                backgroundColor: "#e9dfd6",
-                color: "#3f2819",
-                padding: "10px 18px",
-                borderRadius: 999,
-                fontWeight: 700,
-                textDecoration: "none",
-              }}
-            >
-              Reports
-            </Link>
-          </div>
+          {sellerLinks.map((item) => (
+            <div key={item.href} style={{ marginBottom: 18 }}>
+              <Link href={item.href} style={item.style}>
+                {item.label}
+              </Link>
+            </div>
+          ))}
           <h1>Seller - Manage Featured Products</h1>
           <p>Toggle products to feature them on the homepage</p>
 
@@ -210,7 +181,7 @@ export default function AdminPage() {
                     >
                       <td style={{ padding: "12px" }}>{product.name}</td>
                       <td style={{ padding: "12px" }}>
-                        ₱{Number(product.price).toFixed(2)}
+                        {formatCurrency(product.price)}
                       </td>
                       <td
                         style={{
@@ -227,7 +198,7 @@ export default function AdminPage() {
                           onClick={() =>
                             handleToggleFeatured(
                               product.id,
-                              product.isHomepageFeatured === 1
+                              isEnabledFlag(product.isHomepageFeatured)
                             )
                           }
                           disabled={toggleStates[product.id]}
@@ -236,15 +207,15 @@ export default function AdminPage() {
                             fontSize: "14px",
                             fontWeight: "600",
                             backgroundColor:
-                              product.isHomepageFeatured === 1
+                              isEnabledFlag(product.isHomepageFeatured)
                                 ? "#9b673e"
                                 : "#f8f5f2",
                             color:
-                              product.isHomepageFeatured === 1
+                              isEnabledFlag(product.isHomepageFeatured)
                                 ? "white"
                                 : "#9b673e",
                             border:
-                              product.isHomepageFeatured === 1
+                              isEnabledFlag(product.isHomepageFeatured)
                                 ? "none"
                                 : "2px solid #9b673e",
                             borderRadius: "6px",
@@ -257,7 +228,7 @@ export default function AdminPage() {
                         >
                           {toggleStates[product.id]
                             ? "..."
-                            : product.isHomepageFeatured === 1
+                            : isEnabledFlag(product.isHomepageFeatured)
                             ? "⭐ Featured"
                             : "☆ Not Featured"}
                         </button>

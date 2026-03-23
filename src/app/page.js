@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
 import styles from "./home.module.css";
+import { toggleFeaturedProduct } from "@/utils/featured";
+import { formatCurrency } from "@/utils/formatters";
+import { showToast } from "@/utils/notifications";
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -32,54 +35,37 @@ export default function HomePage() {
   const handleToggleFeatured = async (productId, currentStatus) => {
     setFeaturedToggling((prev) => ({ ...prev, [productId]: true }));
     try {
-      const res = await fetch("/api/products/toggle-featured", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId, isFeatured: !currentStatus }),
-      });
-
-      const data = await res.json();
-      if (data.success) {
+      const nextStatus = !currentStatus;
+      const { ok, data } = await toggleFeaturedProduct(productId, nextStatus);
+      if (ok) {
         // Update local state
         setProducts((prev) =>
           prev.map((p) =>
             p.id === productId
-              ? { ...p, isHomepageFeatured: !currentStatus }
+              ? { ...p, isHomepageFeatured: nextStatus }
               : p
           )
         );
 
-        window.dispatchEvent(
-          new CustomEvent("showToast", {
-            detail: {
-              title: !currentStatus ? "Featured" : "Removed from Featured",
-              message: !currentStatus
-                ? "Product featured on homepage"
-                : "Product removed from homepage",
-              type: "success",
-            },
-          })
-        );
+        showToast({
+          title: !currentStatus ? "Featured" : "Removed from Featured",
+          message: !currentStatus
+            ? "Product featured on homepage"
+            : "Product removed from homepage",
+          type: "success",
+        });
       } else {
-        window.dispatchEvent(
-          new CustomEvent("showToast", {
-            detail: {
-              message: data.message || "Failed to update featured status",
-              type: "error",
-            },
-          })
-        );
+        showToast({
+          message: data.message || "Failed to update featured status",
+          type: "error",
+        });
       }
     } catch (error) {
       console.error("Error toggling featured status:", error);
-      window.dispatchEvent(
-        new CustomEvent("showToast", {
-          detail: {
-            message: "Failed to update featured status",
-            type: "error",
-          },
-        })
-      );
+      showToast({
+        message: "Failed to update featured status",
+        type: "error",
+      });
     } finally {
       setFeaturedToggling((prev) => ({ ...prev, [productId]: false }));
     }
@@ -166,7 +152,7 @@ export default function HomePage() {
                 <div className={styles.productContent}>
                   <h3 className={styles.productName}>{product.name}</h3>
                   <p className={styles.productPrice}>
-                    ₱{Number(product.price).toFixed(2)}
+                    {formatCurrency(product.price)}
                   </p>
                   <div className={styles.productActions}>
                     <Link

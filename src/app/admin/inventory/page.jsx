@@ -6,15 +6,11 @@ import useAuth from "@/hooks/useAuth";
 import styles from "./inventory.module.css";
 import ProductFormModal from "./ProductFormModal";
 import { exportInventoryToPdf } from "./inventoryPdfExport";
-
-function formatPrice(value) {
-  const n = Number(value);
-  if (!Number.isFinite(n)) return "";
-  return `₱${n.toFixed(2)}`;
-}
+import { formatCurrency, isEnabledFlag } from "@/utils/formatters";
+import { showToast } from "@/utils/notifications";
 
 function statusLabel(isEnabled) {
-  return isEnabled === 1 || isEnabled === true ? "Enabled" : "Disabled";
+  return isEnabledFlag(isEnabled) ? "Enabled" : "Disabled";
 }
 
 export default function SellerInventoryPage() {
@@ -101,11 +97,7 @@ export default function SellerInventoryPage() {
       await exportInventoryToPdf({ router });
     } catch (e) {
       console.error(e);
-      window.dispatchEvent(
-        new CustomEvent("showToast", {
-          detail: { message: "Failed to export inventory PDF", type: "error" },
-        })
-      );
+      showToast({ message: "Failed to export inventory PDF", type: "error" });
       setError(e?.message || "Failed to export inventory PDF.");
     } finally {
       setExportingPdf(false);
@@ -165,11 +157,7 @@ export default function SellerInventoryPage() {
           return;
         }
 
-        window.dispatchEvent(
-          new CustomEvent("showToast", {
-            detail: { message: "Product added", type: "success" },
-          })
-        );
+        showToast({ message: "Product added", type: "success" });
 
         closeModal();
       } else {
@@ -190,11 +178,7 @@ export default function SellerInventoryPage() {
           return;
         }
 
-        window.dispatchEvent(
-          new CustomEvent("showToast", {
-            detail: { message: "Product updated", type: "success" },
-          })
-        );
+        showToast({ message: "Product updated", type: "success" });
 
         closeModal();
       }
@@ -214,7 +198,7 @@ export default function SellerInventoryPage() {
     setToggleLoadingById((prev) => ({ ...prev, [productId]: true }));
 
     try {
-      const nextEnabled = currentEnabled === 1 || currentEnabled === true ? 0 : 1;
+      const nextEnabled = isEnabledFlag(currentEnabled) ? 0 : 1;
       const res = await fetch(
         `/api/seller/inventory/${productId}/toggle-enabled`,
         {
@@ -237,15 +221,11 @@ export default function SellerInventoryPage() {
       // Reload current page to reflect changes
       loadProducts(currentPage);
 
-      window.dispatchEvent(
-        new CustomEvent("showToast", {
-          detail: {
-            title: nextEnabled === 1 ? "Product Enabled" : "Product Disabled",
-            message: nextEnabled === 1 ? "Successfully enabled product!" : "Successfully disabled product!",
-            type: "success",
-          },
-        })
-      );
+      showToast({
+        title: nextEnabled === 1 ? "Product Enabled" : "Product Disabled",
+        message: nextEnabled === 1 ? "Successfully enabled product!" : "Successfully disabled product!",
+        type: "success",
+      });
     } catch (err) {
       console.error(err);
       setError("Failed to update product status.");
@@ -343,7 +323,7 @@ export default function SellerInventoryPage() {
                 </thead>
                 <tbody>
                   {products.map((p) => {
-                    const enabled = p.isEnabled === 1 || p.isEnabled === true;
+                    const enabled = isEnabledFlag(p.isEnabled);
                     const rowClass = enabled ? styles.rowEnabled : styles.rowDisabled;
 
                     return (
@@ -371,7 +351,7 @@ export default function SellerInventoryPage() {
                             </div>
                           </div>
                         </td>
-                        <td className={styles.td}>{formatPrice(p.price)}</td>
+                        <td className={styles.td}>{formatCurrency(p.price, "")}</td>
                         <td className={styles.td} style={{ color: "#8a6f5a" }}>
                           {p.category || "—"}
                         </td>
