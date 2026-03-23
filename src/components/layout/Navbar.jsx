@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Package, ShoppingCart, User } from "lucide-react";
+import { Boxes, Package, ShoppingCart, User } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -140,6 +140,21 @@ export default function Navbar() {
                     title="Manage Orders"
                   >
                     <Package size={20} />
+                  </Link>
+                )}
+                {user.role === "Seller" && (
+                  <Link
+                    href="/admin/inventory"
+                    style={{
+                      ...styles.iconButton,
+                      ...(pathname === "/admin/inventory" ||
+                      pathname?.startsWith("/admin/inventory")
+                        ? styles.iconButtonActive
+                        : {}),
+                    }}
+                    title="Manage Inventory"
+                  >
+                    <Boxes size={20} />
                   </Link>
                 )}
                 <Link

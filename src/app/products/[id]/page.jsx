@@ -15,6 +15,7 @@ export default async function ProductDetailPage({ params }) {
     SELECT id, name, description, price, badge, category, image_url
     FROM products
     WHERE id = ?
+    AND isEnabled = 1
     LIMIT 1
     `,
     [productId]

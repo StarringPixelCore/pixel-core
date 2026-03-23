@@ -6,6 +6,7 @@ export async function GET(req) {
       SELECT id, name, description, price, badge, category, image_url, isBestSeller
       FROM products
       WHERE isHomepageFeatured = 1
+      AND isEnabled = 1
       ORDER BY isBestSeller DESC, id DESC
       LIMIT 12
     `;

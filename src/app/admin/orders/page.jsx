@@ -197,7 +197,7 @@ export default function ManageOrdersPage() {
         <section className={styles.headerSection}>
           <h1 className={styles.title}>Manage Orders</h1>
           <p className={styles.subtitle}>
-            Load a buyer&apos;s order by Order ID, then manually update `order_status` and `payment_status`.
+            Load a buyer&apos;s order by Order ID, then manually update order and payment status.
           </p>
         </section>
 

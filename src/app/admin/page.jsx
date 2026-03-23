@@ -19,7 +19,7 @@ export default function AdminPage() {
 
   const fetchAllProducts = async () => {
     try {
-      const res = await fetch("/api/products");
+      const res = await fetch("/api/seller/inventory");
       const data = await res.json();
       if (data.success && data.data) {
         setProducts(data.data);
@@ -98,6 +98,22 @@ export default function AdminPage() {
               Manage Orders
             </Link>
           </div>
+          <div style={{ marginBottom: 18 }}>
+            <Link
+              href="/admin/inventory"
+              style={{
+                display: "inline-block",
+                backgroundColor: "#e9dfd6",
+                color: "#3f2819",
+                padding: "10px 18px",
+                borderRadius: 999,
+                fontWeight: 700,
+                textDecoration: "none",
+              }}
+            >
+              Manage Inventory
+            </Link>
+          </div>
           <h1>Seller - Manage Featured Products</h1>
           <p>Toggle products to feature them on the homepage</p>
 
@@ -148,7 +164,9 @@ export default function AdminPage() {
                       }}
                     >
                       <td style={{ padding: "12px" }}>{product.name}</td>
-                      <td style={{ padding: "12px" }}>${product.price}</td>
+                      <td style={{ padding: "12px" }}>
+                        ₱{Number(product.price).toFixed(2)}
+                      </td>
                       <td
                         style={{
                           padding: "12px",
@@ -206,7 +224,7 @@ export default function AdminPage() {
             </div>
           ) : (
             <p style={{ marginTop: "20px", color: "#8a6f5a" }}>
-              No products available. Add products from the Products page.
+              No products available. Add products using Manage Inventory.
             </p>
           )}
         </>

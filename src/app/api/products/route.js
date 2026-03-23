@@ -6,6 +6,7 @@ export async function GET() {
     const [rows] = await pool.query(`
       SELECT id, name, description, price, category, image_url, badge, isHomepageFeatured, isBestSeller
       FROM products
+      WHERE isEnabled = 1
       ORDER BY created_at DESC
     `);
 

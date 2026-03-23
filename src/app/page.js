@@ -136,7 +136,9 @@ export default function HomePage() {
                 </div>
                 <div className={styles.productContent}>
                   <h3 className={styles.productName}>{product.name}</h3>
-                  <p className={styles.productPrice}>${product.price}</p>
+                  <p className={styles.productPrice}>
+                    ₱{Number(product.price).toFixed(2)}
+                  </p>
                   <div className={styles.productActions}>
                     <Link
                       href={`/products/${product.id}`}

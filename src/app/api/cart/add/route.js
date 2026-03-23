@@ -16,7 +16,7 @@ export async function POST(req) {
     }
 
     const [productRows] = await pool.query(
-      "SELECT id, price FROM products WHERE id = ? LIMIT 1",
+      "SELECT id, price FROM products WHERE id = ? AND isEnabled = 1 LIMIT 1",
       [productId]
     );
 
