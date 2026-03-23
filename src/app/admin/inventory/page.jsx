@@ -424,8 +424,8 @@ export default function SellerInventoryPage() {
                   </div>
                   <div className={styles.modalSubtitle}>
                     {modalMode === "add"
-                      ? "Create a new inventory item."
-                      : "Update product details (name, description, price, etc.)."}
+                      ? "Add new product to your inventory."
+                      : "Update product details."}
                   </div>
                 </div>
                 <button
