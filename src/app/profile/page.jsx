@@ -15,6 +15,7 @@ export default function ProfilePage() {
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const [editFormData, setEditFormData] = useState({
     firstName: "",
@@ -173,12 +174,6 @@ export default function ProfilePage() {
   };
 
   const handleDeleteAccount = async () => {
-    if (!window.confirm(
-      "Are you sure you want to delete your account? This action cannot be undone."
-    )) {
-      return;
-    }
-
     setIsDeleting(true);
     setErrors({});
 
@@ -205,6 +200,27 @@ export default function ProfilePage() {
       setIsDeleting(false);
     }
   };
+
+  const openDeleteModal = () => {
+    setErrors((prev) => ({ ...prev, form: "" }));
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    if (isDeleting) return;
+    setIsDeleteModalOpen(false);
+  };
+
+  useEffect(() => {
+    if (!isDeleteModalOpen) return;
+
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") closeDeleteModal();
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isDeleteModalOpen, isDeleting]);
 
   const handleLogout = async () => {
     try {
@@ -527,7 +543,7 @@ export default function ProfilePage() {
                 cannot be undone.
               </p>
               <button
-                onClick={handleDeleteAccount}
+                onClick={openDeleteModal}
                 disabled={isDeleting}
                 className={`${styles.deleteButton} ${isDeleting ? styles.deleteButtonDisabled : ""}`}
               >
@@ -543,6 +559,54 @@ export default function ProfilePage() {
           </button>
         </div>
       </div>
+
+      {user?.role === "Buyer" && isDeleteModalOpen && (
+        <div
+          className={styles.modalOverlay}
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) closeDeleteModal();
+          }}
+          role="presentation"
+        >
+          <div
+            className={styles.modal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-account-title"
+            aria-describedby="delete-account-description"
+          >
+            <div className={styles.modalIconWrapper}>
+              <span className={styles.modalIcon} aria-hidden="true">
+                !
+              </span>
+            </div>
+            <h3 className={styles.modalTitle} id="delete-account-title">
+              Are you sure?
+            </h3>
+            <p className={styles.modalDescription} id="delete-account-description">
+              This action can’t be undone. Please confirm if you want to proceed.
+            </p>
+            <div className={styles.modalButtons}>
+              <button
+                type="button"
+                className={styles.modalCancelButton}
+                onClick={closeDeleteModal}
+                disabled={isDeleting}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className={styles.modalConfirmButton}
+                onClick={handleDeleteAccount}
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Deleting..." : "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
