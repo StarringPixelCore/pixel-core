@@ -37,6 +37,18 @@ export async function GET(req) {
     const sellerError = await requireSeller(req);
     if (sellerError) return sellerError;
 
+    const url = new URL(req.url);
+    const page = parseInt(url.searchParams.get('page')) || 1;
+    const limit = parseInt(url.searchParams.get('limit')) || 5;
+    const offset = (page - 1) * limit;
+
+    // Get total count
+    const [countResult] = await pool.query(`
+      SELECT COUNT(*) as total FROM products
+    `);
+    const total = countResult[0].total;
+
+    // Get paginated products
     const [rows] = await pool.query(`
       SELECT
         id,
@@ -52,14 +64,29 @@ export async function GET(req) {
         created_at
       FROM products
       ORDER BY created_at DESC
-    `);
+      LIMIT ? OFFSET ?
+    `, [limit, offset]);
 
     const products = rows.map((p) => ({
       ...p,
       badge: p.badge || "",
     }));
 
-    return NextResponse.json({ success: true, data: products, products });
+    const totalPages = Math.ceil(total / limit);
+
+    return NextResponse.json({
+      success: true,
+      data: products,
+      products,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems: total,
+        itemsPerPage: limit,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1
+      }
+    });
   } catch (error) {
     console.error("GET SELLER INVENTORY ERROR:", error);
     return NextResponse.json(

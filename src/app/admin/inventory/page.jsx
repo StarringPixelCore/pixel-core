@@ -42,6 +42,11 @@ export default function SellerInventoryPage() {
     image_url: "",
   });
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState(null);
+  const itemsPerPage = 5;
+
   const isSeller = user?.role === "Seller";
 
   useEffect(() => {
@@ -54,40 +59,43 @@ export default function SellerInventoryPage() {
 
     if (user?.role !== "Seller") return;
 
-    (async () => {
-      setLoadingProducts(true);
-      setError("");
-      try {
-        const res = await fetch("/api/seller/inventory", { cache: "no-store" });
-        const data = await res.json();
+    loadProducts(currentPage);
+  }, [loading, user, router, currentPage]);
 
-        if (res.status === 401) {
-          router.replace("/login?redirect=/admin/inventory");
-          return;
-        }
+  const loadProducts = async (page = 1) => {
+    setLoadingProducts(true);
+    setError("");
+    try {
+      const res = await fetch(`/api/seller/inventory?page=${page}&limit=${itemsPerPage}`, { cache: "no-store" });
+      const data = await res.json();
 
-        if (res.status === 403) {
-          setError("Access denied. Only sellers can manage inventory.");
-          setProducts([]);
-          return;
-        }
-
-        if (!res.ok) {
-          setError(data.error || "Failed to load inventory.");
-          setProducts([]);
-          return;
-        }
-
-        setProducts(data.data || data.products || []);
-      } catch (e) {
-        console.error(e);
-        setError("Failed to load inventory.");
-        setProducts([]);
-      } finally {
-        setLoadingProducts(false);
+      if (res.status === 401) {
+        router.replace("/login?redirect=/admin/inventory");
+        return;
       }
-    })();
-  }, [loading, user, router]);
+
+      if (res.status === 403) {
+        setError("Access denied. Only sellers can manage inventory.");
+        setProducts([]);
+        return;
+      }
+
+      if (!res.ok) {
+        setError(data.error || "Failed to load inventory.");
+        setProducts([]);
+        return;
+      }
+
+      setProducts(data.data || data.products || []);
+      setPagination(data.pagination);
+    } catch (e) {
+      console.error(e);
+      setError("Failed to load inventory.");
+      setProducts([]);
+    } finally {
+      setLoadingProducts(false);
+    }
+  };
 
   const openAddModal = () => {
     setModalMode("add");
@@ -182,11 +190,6 @@ export default function SellerInventoryPage() {
           return;
         }
 
-        const updated = data.product;
-        setProducts((prev) =>
-          prev.map((p) => (p.id === updated.id ? updated : p))
-        );
-
         window.dispatchEvent(
           new CustomEvent("showToast", {
             detail: { message: "Product updated", type: "success" },
@@ -197,9 +200,7 @@ export default function SellerInventoryPage() {
       }
 
       // Re-sync list after create (and after edit, it's cheap enough).
-      const res = await fetch("/api/seller/inventory", { cache: "no-store" });
-      const data = await res.json();
-      if (res.ok) setProducts(data.data || data.products || []);
+      loadProducts(currentPage);
     } catch (err) {
       console.error(err);
       setError("Something went wrong while saving the product.");
@@ -233,11 +234,8 @@ export default function SellerInventoryPage() {
         return;
       }
 
-      setProducts((prev) =>
-        prev.map((p) =>
-          p.id === productId ? { ...p, isEnabled: nextEnabled } : p
-        )
-      );
+      // Reload current page to reflect changes
+      loadProducts(currentPage);
 
       window.dispatchEvent(
         new CustomEvent("showToast", {
@@ -317,97 +315,126 @@ export default function SellerInventoryPage() {
             <p style={{ marginTop: 16, color: "#8b6c57" }}>Loading inventory…</p>
           </div>
         ) : products.length > 0 ? (
-          <div className={styles.tableWrapper}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th className={styles.th} style={{ width: 360 }}>
-                    Product
-                  </th>
-                  <th className={styles.th}>Price</th>
-                  <th className={styles.th}>Category</th>
-                  <th className={styles.th}>Status</th>
-                  <th className={styles.th} style={{ width: 260 }}>
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((p) => {
-                  const enabled = p.isEnabled === 1 || p.isEnabled === true;
-                  const rowClass = enabled ? styles.rowEnabled : styles.rowDisabled;
+          <>
+            <div className={styles.tableWrapper}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th className={styles.th} style={{ width: 360 }}>
+                      Product
+                    </th>
+                    <th className={styles.th}>Price</th>
+                    <th className={styles.th}>Category</th>
+                    <th className={styles.th}>Status</th>
+                    <th className={styles.th} style={{ width: 260 }}>
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {products.map((p) => {
+                    const enabled = p.isEnabled === 1 || p.isEnabled === true;
+                    const rowClass = enabled ? styles.rowEnabled : styles.rowDisabled;
 
-                  return (
-                    <tr key={p.id} className={rowClass}>
-                      <td className={styles.td}>
-                        <div className={styles.productCell}>
-                          {p.image_url ? (
-                            <img
-                              src={p.image_url}
-                              alt={p.name}
-                              className={styles.thumb}
-                            />
-                          ) : (
-                            <div className={styles.thumbPlaceholder} aria-hidden />
-                          )}
-                          <div>
-                            <div className={styles.productName}>{p.name}</div>
-                            {p.badge ? (
-                              <div className={styles.badgeText}>{p.badge}</div>
-                            ) : null}
-                            <div className={styles.descText}>
-                              {(p.description || "").slice(0, 60)}
-                              {(p.description || "").length > 60 ? "…" : ""}
+                    return (
+                      <tr key={p.id} className={rowClass}>
+                        <td className={styles.td}>
+                          <div className={styles.productCell}>
+                            {p.image_url ? (
+                              <img
+                                src={p.image_url}
+                                alt={p.name}
+                                className={styles.thumb}
+                              />
+                            ) : (
+                              <div className={styles.thumbPlaceholder} aria-hidden />
+                            )}
+                            <div>
+                              <div className={styles.productName}>{p.name}</div>
+                              {p.badge ? (
+                                <div className={styles.badgeText}>{p.badge}</div>
+                              ) : null}
+                              <div className={styles.descText}>
+                                {(p.description || "").slice(0, 60)}
+                                {(p.description || "").length > 60 ? "…" : ""}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className={styles.td}>{formatPrice(p.price)}</td>
-                      <td className={styles.td} style={{ color: "#8a6f5a" }}>
-                        {p.category || "—"}
-                      </td>
-                      <td className={styles.td}>
-                        <span
-                          className={
-                            enabled ? styles.statusEnabled : styles.statusDisabled
-                          }
-                        >
-                          {statusLabel(p.isEnabled)}
-                        </span>
-                      </td>
-                      <td className={styles.td}>
-                        <div className={styles.actionButtons}>
-                          <button
-                            type="button"
-                            className={styles.smallButton}
-                            onClick={() =>
-                              toggleEnabled(p.id, p.isEnabled)
+                        </td>
+                        <td className={styles.td}>{formatPrice(p.price)}</td>
+                        <td className={styles.td} style={{ color: "#8a6f5a" }}>
+                          {p.category || "—"}
+                        </td>
+                        <td className={styles.td}>
+                          <span
+                            className={
+                              enabled ? styles.statusEnabled : styles.statusDisabled
                             }
-                            disabled={toggleLoadingById[p.id]}
                           >
-                            {toggleLoadingById[p.id]
-                              ? "..."
-                              : enabled
-                                ? "Disable"
-                                : "Enable"}
-                          </button>
+                            {statusLabel(p.isEnabled)}
+                          </span>
+                        </td>
+                        <td className={styles.td}>
+                          <div className={styles.actionButtons}>
+                            <button
+                              type="button"
+                              className={styles.smallButton}
+                              onClick={() =>
+                                toggleEnabled(p.id, p.isEnabled)
+                              }
+                              disabled={toggleLoadingById[p.id]}
+                            >
+                              {toggleLoadingById[p.id]
+                                ? "..."
+                                : enabled
+                                  ? "Disable"
+                                  : "Enable"}
+                            </button>
 
-                          <button
-                            type="button"
-                            className={styles.smallSecondaryButton}
-                            onClick={() => openEditModal(p)}
-                            disabled={toggleLoadingById[p.id]}
-                          >
-                            Edit
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                            <button
+                              type="button"
+                              className={styles.smallSecondaryButton}
+                              onClick={() => openEditModal(p)}
+                              disabled={toggleLoadingById[p.id]}
+                            >
+                              Edit
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination Controls */}
+            {pagination && pagination.totalPages > 1 && (
+              <div className={styles.pagination}>
+                <button
+                  type="button"
+                  className={styles.paginationButton}
+                  onClick={() => setCurrentPage(currentPage - 1)}
+                  disabled={!pagination.hasPrevPage || loadingProducts}
+                >
+                  ← Previous
+                </button>
+
+                <span className={styles.paginationInfo}>
+                  Page {pagination.currentPage} of {pagination.totalPages}
+                </span>
+
+                <button
+                  type="button"
+                  className={styles.paginationButton}
+                  onClick={() => setCurrentPage(currentPage + 1)}
+                  disabled={!pagination.hasNextPage || loadingProducts}
+                >
+                  Next →
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className={styles.emptyState}>
             <p>{emptyStateText}</p>
