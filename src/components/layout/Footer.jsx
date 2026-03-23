@@ -48,7 +48,7 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/contact" className={styles.link}>
+              <Link href="#" className={styles.link}>
                 Contact
               </Link>
             </li>
