@@ -225,6 +225,12 @@ export default function ProfilePage() {
   return (
     <main className={styles.container}>
       <div className={styles.profileWrapper}>
+        <div className={styles.topNavigation}>
+          <Link href="/" className={styles.backLink}>
+            ← Back to Home
+          </Link>
+        </div>
+
         <div className={styles.header}>
           <h1 className={styles.heading}>{user.firstName} {user.lastName}</h1>
           {user.role === "Buyer" && (
@@ -235,18 +241,14 @@ export default function ProfilePage() {
             </p>
           )}
           {user.role === "Seller" && (
-            <>
-              <p className={styles.ordersLinkWrap}>
-                <Link href="/admin/orders" className={styles.ordersLink}>
-                  Manage Orders →
-                </Link>
-              </p>
-              <p className={styles.ordersLinkWrap}>
-                <Link href="/products" className={styles.ordersLink}>
-                  My Products →
-                </Link>
-              </p>
-            </>
+            <div className={styles.sellerLinks}>
+              <Link href="/admin/orders" className={styles.ordersLink}>
+                Manage Orders →
+              </Link>
+              <Link href="/products" className={styles.ordersLink}>
+                My Products →
+              </Link>
+            </div>
           )}
         </div>
 
@@ -470,9 +472,6 @@ export default function ProfilePage() {
         </div>
 
         <div className={styles.footer}>
-          <Link href="/" className={styles.backLink}>
-            ← Back to Home
-          </Link>
           <button onClick={handleLogout} className={styles.logoutButton}>
             Logout
           </button>

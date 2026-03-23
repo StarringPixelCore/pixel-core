@@ -17,6 +17,10 @@
   padding: 40px;
 }
 
+.topNavigation {
+  margin-bottom: 20px;
+}
+
 .header {
   margin-bottom: 30px;
   border-bottom: 2px solid #ddd1c7;
@@ -45,6 +49,12 @@
 .ordersLink:hover {
   color: #8a5933;
   text-decoration: underline;
+}
+
+.sellerLinks {
+  display: flex;
+  gap: 24px;
+  margin: 12px 0 0 0;
 }
 
 .sectionsContainer {
@@ -258,9 +268,8 @@
   padding-top: 20px;
   border-top: 2px solid #ddd1c7;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  gap: 16px;
 }
 
 .backLink {
