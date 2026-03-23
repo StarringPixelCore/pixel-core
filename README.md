@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<a name="readme-top">
 
-## Getting Started
+<br/>
 
-First, run the development server:
+<br />
+<div align="center">
+  <a href="https://github.com/a-manalo/">
+    <img src="public/images/cocoir_logo.png"
+     alt="PixelCore's Cocoir Website"
+     width="200"
+     height="200">
+  </a>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+  <h3 align="center">Cocoir</h3>
+</div>
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<div align="center">
+  A Simple E-Commerce Website
+</div>
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+<br />
+<br />
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#overview">Overview</a>
+      <ol>
+        <li>
+          <a href="#key-components">Key Components</a>
+        </li>
+        <li>
+          <a href="#technology">Technology</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#resources">Resources</a>
+    </li>
+  </ol>
+</details>
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Overview
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Cocoir is an e‑commerce platform dedicated to promoting sustainable living through coconut coir‑based products. Our mission is to show how natural materials can be transformed into valuable everyday solutions while encouraging people to make greener choices. 
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Key Components
 
-## Deploy on Vercel
+- Home Page with Storefront
+  - Hero Section
+  - Featured Products
+  - Footer
+- Products Page
+  - Product Categories
+    - Product Details
+    - Buyer Features:
+        - Add to Cart
+        - Buy Now
+  - Seller Features
+    - Modify Storefront
+- Checkout Page (Buyer)
+- Cart Page (Buyer)
+- Order History Page (Buyer)
+- Manage Orders Page (Seller)
+- Manage Inventory Page (Seller)
+- Sales Report Page (Seller)
+- About Us Page
+- Authentication System
+  - Login
+  - Signup
+  - Role Authentication
+- Profile Page
+  - Edit personal information
+  - Upload profile picture
+  - Change password
+  - Delete account (Buyer)
+- Additional Features
+    - Export to PDF functionality
+    - Search functionality
+    - Error Page
+    - CRUD Operations
+    - Database Integration
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Technology
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+#### Language
+![CSS](https://img.shields.io/badge/CSS-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+
+#### Framework/Library
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+
+#### Databases
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+
+## Resources
+
+| Title        | Purpose                                                                       | Link          |
+| ------------ | ----------------------------------------------------------------------------- | ------------- |
+| Google Fonts API          | Used for integrating custom fonts for styling                                                                           | https://fonts.googleapis.com           |
+| Claude             | Used for debugging and ensuring proper code structure          | https://claude.ai/            |
+| Pinterest          | Source of product and design inspiration images                | https://www.pinterest.com     |
