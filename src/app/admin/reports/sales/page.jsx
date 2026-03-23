@@ -3,131 +3,126 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
-import { PAYMENT_LABEL, formatDate, formatStatusLabel } from "@/app/orders/orderHelpers";
+import { PAYMENT_LABEL, formatDate } from "@/app/orders/orderHelpers";
 import styles from "./sales.module.css";
-import { pdf, Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { pdf } from "@react-pdf/renderer";
+import { showToast } from "@/utils/notifications";
+import { SalesReportPdf } from "./SalesReportPdf";
+import {
+  formatCurrency,
+  safePaymentLabel,
+  formatStatusLabel,
+  formatDateRange,
+} from "./salesReportFormatters";
 
-function formatCurrency(value) {
-  const n = Number(value);
-  if (!Number.isFinite(n)) return "₱0.00";
-  return `₱${n.toFixed(2)}`;
-}
-
-function safePaymentLabel(method) {
-  if (!method) return "Unknown";
-  const key = String(method);
-  return PAYMENT_LABEL[key] || key.replace(/_/g, " ");
-}
-
-function SalesReportPdf({ rangeLabel, startAt, endAt, totalSales, orderCount, sales }) {
-  const pdfStyles = getPdfStyles();
+function SalesTable({ data, emptyText, loadingLists }) {
+  const sales = data?.sales || [];
 
   return (
-    <Document>
-      <Page size="A4" style={pdfStyles.page}>
-        <View style={pdfStyles.header}>
-          <Text style={pdfStyles.title}>Sales Report</Text>
-          <Text style={pdfStyles.subtitle}>{rangeLabel}</Text>
-          <Text style={pdfStyles.meta}>
-            {startAt ? new Date(startAt).toLocaleDateString() : ""} -{" "}
-            {endAt ? new Date(endAt).toLocaleDateString() : ""}
-          </Text>
-          <Text style={pdfStyles.meta}>
-            Total: {formatCurrency(totalSales)} | Orders: {orderCount}
-          </Text>
-        </View>
-
-        <View style={pdfStyles.list}>
-          {sales?.length ? (
+    <div className={styles.tableWrapper}>
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            <th className={styles.th}>Order ID</th>
+            <th className={styles.th}>Buyer</th>
+            <th className={styles.th}>Date</th>
+            <th className={styles.th}>Payment</th>
+            <th className={styles.th}>Items</th>
+            <th className={styles.th}>Status</th>
+            <th className={styles.th}>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loadingLists && !data ? (
+            <tr>
+              <td className={styles.td} colSpan={7}>
+                Loading...
+              </td>
+            </tr>
+          ) : sales.length ? (
             sales.map((s) => (
-              <View key={s.id} style={pdfStyles.item}>
-                <Text style={pdfStyles.rowTitle}>
-                  Order #{s.id} - {s.buyer?.firstName || ""} {s.buyer?.lastName || ""}
-                </Text>
-                <Text style={pdfStyles.metaSmall}>
-                  Date: {s.createdAt ? new Date(s.createdAt).toLocaleString() : ""}
-                </Text>
-                <Text style={pdfStyles.metaSmall}>
-                  Payment: {safePaymentLabel(s.paymentMethod)}{" "}
-                  {s.referenceNumber ? `(${s.referenceNumber})` : ""}
-                </Text>
-                <Text style={pdfStyles.metaSmall}>
-                  Status: {formatStatusLabel(s.orderStatus)} | Amount: {formatCurrency(s.totalAmount)}
-                </Text>
-                {s.itemsSummary ? (
-                  <Text style={pdfStyles.items}>
-                    Items: {s.itemsSummary}
-                  </Text>
-                ) : null}
-              </View>
+              <tr key={s.id} className={styles.tr}>
+                <td className={styles.td}>{s.id}</td>
+                <td className={styles.td}>
+                  {s.buyer?.firstName} {s.buyer?.lastName}
+                  <div style={{ color: "#8a6f5a", fontSize: "0.85rem" }}>{s.buyer?.email}</div>
+                </td>
+                <td className={styles.td}>{formatDate(s.createdAt)}</td>
+                <td className={styles.td}>
+                  {safePaymentLabel(s.paymentMethod, PAYMENT_LABEL)}
+                  {s.referenceNumber ? (
+                    <div style={{ color: "#8a6f5a", fontSize: "0.85rem" }}>{s.referenceNumber}</div>
+                  ) : null}
+                </td>
+                <td className={styles.td}>
+                  <div className={styles.itemsCell}>{s.itemsSummary || "-"}</div>
+                </td>
+                <td className={styles.td}>
+                  <span className={styles.statusBadge}>{formatStatusLabel(s.orderStatus)}</span>
+                </td>
+                <td className={styles.td} style={{ fontWeight: 900 }}>
+                  {formatCurrency(s.totalAmount)}
+                </td>
+              </tr>
             ))
           ) : (
-            <Text style={pdfStyles.empty}>No sales for this range.</Text>
+            <tr>
+              <td className={styles.td} colSpan={7}>
+                <div className={styles.emptyState}>{emptyText}</div>
+              </td>
+            </tr>
           )}
-        </View>
-      </Page>
-    </Document>
+        </tbody>
+      </table>
+    </div>
   );
 }
 
-function getPdfStyles() {
-  return StyleSheet.create({
-    page: {
-      padding: 28,
-      fontSize: 10,
-      fontFamily: "Helvetica",
-      lineHeight: 1.35,
-    },
-    header: {
-      marginBottom: 16,
-    },
-    title: {
-      fontSize: 18,
-      fontWeight: 900,
-      color: "#2f1a0f",
-      marginBottom: 2,
-    },
-    subtitle: {
-      fontSize: 12,
-      fontWeight: 800,
-      color: "#8b6c57",
-      marginBottom: 6,
-    },
-    meta: {
-      fontSize: 10,
-      color: "#8a6f5a",
-      marginBottom: 2,
-    },
-    list: {
-      marginTop: 6,
-    },
-    item: {
-      marginBottom: 12,
-      paddingBottom: 10,
-      borderBottomWidth: 1,
-      borderBottomColor: "#eadfd6",
-    },
-    rowTitle: {
-      fontSize: 11,
-      fontWeight: 900,
-      color: "#2f1a0f",
-      marginBottom: 2,
-    },
-    metaSmall: {
-      fontSize: 10,
-      color: "#3f2819",
-      marginBottom: 1,
-    },
-    items: {
-      fontSize: 9.5,
-      color: "#8a6f5a",
-      marginTop: 2,
-    },
-    empty: {
-      fontSize: 12,
-      color: "#8a6f5a",
-    },
-  });
+function SalesRangeSection({
+  title,
+  subtitle,
+  rangeKey,
+  data,
+  loadingLists,
+  exporting,
+  onExport,
+  emptyText,
+}) {
+  return (
+    <div className={styles.section}>
+      <div className={styles.sectionHeader}>
+        <div>
+          <h2 className={styles.sectionTitle}>{title}</h2>
+          <div className={styles.sectionSubtitle}>{subtitle}</div>
+        </div>
+        <div className={styles.sectionActions}>
+          <button
+            type="button"
+            className={styles.primaryButton}
+            onClick={() => onExport(rangeKey, data)}
+            disabled={exporting || loadingLists || !data}
+            title={`Export ${rangeKey} sales to PDF`}
+          >
+            {exporting ? "Exporting..." : "Export to PDF"}
+          </button>
+        </div>
+      </div>
+
+      <div className={styles.summaryBar}>
+        <div>
+          <div className={styles.summaryValue}>
+            {data ? formatCurrency(data.totalSales) : formatCurrency(0)}
+          </div>
+          <div className={styles.summaryMeta}>
+            {data ? `${data.orderCount} delivered orders` : "Loading..."}
+          </div>
+        </div>
+        <div className={styles.summaryMeta}>{formatDateRange(data?.startAt, data?.endAt)}</div>
+      </div>
+
+      <SalesTable data={data} emptyText={emptyText} loadingLists={loadingLists} />
+    </div>
+  );
 }
 
 export default function SalesReportPage() {
@@ -195,6 +190,7 @@ export default function SalesReportPage() {
           totalSales={data.totalSales}
           orderCount={data.orderCount}
           sales={data.sales}
+          paymentLabel={PAYMENT_LABEL}
         />
       ).toBlob();
 
@@ -212,83 +208,10 @@ export default function SalesReportPage() {
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (e) {
       console.error(e);
-      window.dispatchEvent(
-        new CustomEvent("showToast", {
-          detail: { message: "Failed to export PDF", type: "error" },
-        })
-      );
+      showToast({ message: "Failed to export PDF", type: "error" });
     } finally {
       setExporting(false);
     }
-  };
-
-  const renderSalesTable = (data, emptyText) => {
-    const sales = data?.sales || [];
-
-    return (
-      <div className={styles.tableWrapper}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th className={styles.th}>Order ID</th>
-              <th className={styles.th}>Buyer</th>
-              <th className={styles.th}>Date</th>
-              <th className={styles.th}>Payment</th>
-              <th className={styles.th}>Items</th>
-              <th className={styles.th}>Status</th>
-              <th className={styles.th}>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loadingLists && !data ? (
-              <tr>
-                <td className={styles.td} colSpan={7}>
-                  Loading...
-                </td>
-              </tr>
-            ) : sales.length ? (
-              sales.map((s) => (
-                <tr key={s.id} className={styles.tr}>
-                  <td className={styles.td}>{s.id}</td>
-                  <td className={styles.td}>
-                    {s.buyer?.firstName} {s.buyer?.lastName}
-                    <div style={{ color: "#8a6f5a", fontSize: "0.85rem" }}>
-                      {s.buyer?.email}
-                    </div>
-                  </td>
-                  <td className={styles.td}>{formatDate(s.createdAt)}</td>
-                  <td className={styles.td}>
-                    {safePaymentLabel(s.paymentMethod)}
-                    {s.referenceNumber ? (
-                      <div style={{ color: "#8a6f5a", fontSize: "0.85rem" }}>
-                        {s.referenceNumber}
-                      </div>
-                    ) : null}
-                  </td>
-                  <td className={styles.td}>
-                    <div className={styles.itemsCell}>{s.itemsSummary || "-"}</div>
-                  </td>
-                  <td className={styles.td}>
-                    <span className={styles.statusBadge}>
-                      {formatStatusLabel(s.orderStatus)}
-                    </span>
-                  </td>
-                  <td className={styles.td} style={{ fontWeight: 900 }}>
-                    {formatCurrency(s.totalAmount)}
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td className={styles.td} colSpan={7}>
-                  <div className={styles.emptyState}>{emptyText}</div>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-    );
   };
 
   if (loading || user === null) {
@@ -345,85 +268,27 @@ export default function SalesReportPage() {
           </div>
         ) : null}
 
-        <div className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <div>
-              <h2 className={styles.sectionTitle}>Day Sales</h2>
-              <div className={styles.sectionSubtitle}>Delivered orders for today</div>
-            </div>
-            <div className={styles.sectionActions}>
-              <button
-                type="button"
-                className={styles.primaryButton}
-                onClick={() => handleExportPdfFor("day", dayData)}
-                disabled={exporting || loadingLists || !dayData}
-                title="Export day sales to PDF"
-              >
-                {exporting ? "Exporting..." : "Export to PDF"}
-              </button>
-            </div>
-          </div>
+        <SalesRangeSection
+          title="Day Sales"
+          subtitle="Delivered orders for today"
+          rangeKey="day"
+          data={dayData}
+          loadingLists={loadingLists}
+          exporting={exporting}
+          onExport={handleExportPdfFor}
+          emptyText="No sales found for today."
+        />
 
-          <div className={styles.summaryBar}>
-            <div>
-              <div className={styles.summaryValue}>
-                {dayData ? formatCurrency(dayData.totalSales) : formatCurrency(0)}
-              </div>
-              <div className={styles.summaryMeta}>
-                {dayData ? `${dayData.orderCount} delivered orders` : "Loading..."}
-              </div>
-            </div>
-            <div className={styles.summaryMeta}>
-              {dayData?.startAt && dayData?.endAt
-                ? `${new Date(dayData.startAt).toLocaleDateString()} - ${new Date(
-                    dayData.endAt
-                  ).toLocaleDateString()}`
-                : ""}
-            </div>
-          </div>
-
-          {renderSalesTable(dayData, "No sales found for today.")}
-        </div>
-
-        <div className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <div>
-              <h2 className={styles.sectionTitle}>Month Sales</h2>
-              <div className={styles.sectionSubtitle}>Delivered orders for this month</div>
-            </div>
-            <div className={styles.sectionActions}>
-              <button
-                type="button"
-                className={styles.primaryButton}
-                onClick={() => handleExportPdfFor("month", monthData)}
-                disabled={exporting || loadingLists || !monthData}
-                title="Export month sales to PDF"
-              >
-                {exporting ? "Exporting..." : "Export to PDF"}
-              </button>
-            </div>
-          </div>
-
-          <div className={styles.summaryBar}>
-            <div>
-              <div className={styles.summaryValue}>
-                {monthData ? formatCurrency(monthData.totalSales) : formatCurrency(0)}
-              </div>
-              <div className={styles.summaryMeta}>
-                {monthData ? `${monthData.orderCount} delivered orders` : "Loading..."}
-              </div>
-            </div>
-            <div className={styles.summaryMeta}>
-              {monthData?.startAt && monthData?.endAt
-                ? `${new Date(monthData.startAt).toLocaleDateString()} - ${new Date(
-                    monthData.endAt
-                  ).toLocaleDateString()}`
-                : ""}
-            </div>
-          </div>
-
-          {renderSalesTable(monthData, "No sales found for this month.")}
-        </div>
+        <SalesRangeSection
+          title="Month Sales"
+          subtitle="Delivered orders for this month"
+          rangeKey="month"
+          data={monthData}
+          loadingLists={loadingLists}
+          exporting={exporting}
+          onExport={handleExportPdfFor}
+          emptyText="No sales found for this month."
+        />
       </div>
     </main>
   );
