@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
 
 export default function AdminPage() {
@@ -81,6 +82,22 @@ export default function AdminPage() {
     <div style={{ padding: "40px", maxWidth: "1000px", margin: "0 auto" }}>
       {user?.role === "Seller" && (
         <>
+          <div style={{ marginBottom: 18 }}>
+            <Link
+              href="/admin/orders"
+              style={{
+                display: "inline-block",
+                backgroundColor: "#9b673e",
+                color: "white",
+                padding: "10px 18px",
+                borderRadius: 999,
+                fontWeight: 700,
+                textDecoration: "none",
+              }}
+            >
+              Manage Orders
+            </Link>
+          </div>
           <h1>Seller - Manage Featured Products</h1>
           <p>Toggle products to feature them on the homepage</p>
 

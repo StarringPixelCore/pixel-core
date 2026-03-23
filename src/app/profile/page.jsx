@@ -235,11 +235,18 @@ export default function ProfilePage() {
             </p>
           )}
           {user.role === "Seller" && (
-            <p className={styles.ordersLinkWrap}>
-              <Link href="/products" className={styles.ordersLink}>
-                My Products →
-              </Link>
-            </p>
+            <>
+              <p className={styles.ordersLinkWrap}>
+                <Link href="/admin/orders" className={styles.ordersLink}>
+                  Manage Orders →
+                </Link>
+              </p>
+              <p className={styles.ordersLinkWrap}>
+                <Link href="/products" className={styles.ordersLink}>
+                  My Products →
+                </Link>
+              </p>
+            </>
           )}
         </div>
 

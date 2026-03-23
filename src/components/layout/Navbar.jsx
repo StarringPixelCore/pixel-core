@@ -127,14 +127,24 @@ export default function Navbar() {
                     <Package size={20} />
                   </Link>
                 )}
+                {user.role === "Seller" && (
+                  <Link
+                    href="/admin/orders"
+                    style={{
+                      ...styles.iconButton,
+                      ...(pathname === "/admin/orders" ||
+                      pathname?.startsWith("/admin/orders")
+                        ? styles.iconButtonActive
+                        : {}),
+                    }}
+                    title="Manage Orders"
+                  >
+                    <Package size={20} />
+                  </Link>
+                )}
                 <Link
                   href="/profile"
-                  style={{
-                    ...styles.iconButton,
-                    ...(pathname === "/profile"
-                      ? styles.iconButtonActive
-                      : {}),
-                  }}
+                  style={styles.iconButton}
                   title="Profile"
                 >
                   <User size={20} />
