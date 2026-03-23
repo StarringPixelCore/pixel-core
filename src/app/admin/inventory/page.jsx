@@ -5,6 +5,7 @@ import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
 import styles from "./inventory.module.css";
 import ProductFormModal from "./ProductFormModal";
+import { exportInventoryToPdf } from "./inventoryPdfExport";
 
 function formatPrice(value) {
   const n = Number(value);
@@ -22,6 +23,7 @@ export default function SellerInventoryPage() {
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [error, setError] = useState("");
+  const [exportingPdf, setExportingPdf] = useState(false);
 
   const [toggleLoadingById, setToggleLoadingById] = useState({});
 
@@ -91,6 +93,23 @@ export default function SellerInventoryPage() {
     setEditingProductId(null);
     setModalInitialData(null);
     setModalOpen(true);
+  };
+
+  const handleExportPdf = async () => {
+    setExportingPdf(true);
+    try {
+      await exportInventoryToPdf({ router });
+    } catch (e) {
+      console.error(e);
+      window.dispatchEvent(
+        new CustomEvent("showToast", {
+          detail: { message: "Failed to export inventory PDF", type: "error" },
+        })
+      );
+      setError(e?.message || "Failed to export inventory PDF.");
+    } finally {
+      setExportingPdf(false);
+    }
   };
 
   const openEditModal = (product) => {
@@ -282,6 +301,15 @@ export default function SellerInventoryPage() {
           </div>
 
           <div className={styles.headerActions}>
+            <button
+              type="button"
+              className={styles.secondaryButton + " " + styles.button}
+              onClick={handleExportPdf}
+              disabled={exportingPdf || loadingProducts}
+              title="Export inventory list to PDF"
+            >
+              {exportingPdf ? "Exporting..." : "Export to PDF"}
+            </button>
             <button type="button" className={styles.button} onClick={openAddModal}>
               + Add product
             </button>
