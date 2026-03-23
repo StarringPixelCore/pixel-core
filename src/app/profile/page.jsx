@@ -5,6 +5,60 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./profile.module.css";
 
+function SectionHeader({ title, actionLabel, onAction }) {
+  return (
+    <div className={styles.sectionHeader}>
+      <h2 className={styles.sectionTitle}>{title}</h2>
+      {actionLabel ? (
+        <button onClick={onAction} className={styles.actionButton}>
+          {actionLabel}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function FormField({
+  label,
+  name,
+  type = "text",
+  value,
+  onChange,
+  error,
+  placeholder,
+}) {
+  return (
+    <div className={styles.formGroup}>
+      <label className={styles.label}>{label}</label>
+      <input
+        type={type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className={`${styles.input} ${error ? styles.inputError : ""}`}
+      />
+      {error ? <span className={styles.fieldError}>{error}</span> : null}
+    </div>
+  );
+}
+
+function TextareaField({ label, name, value, onChange, error, style }) {
+  return (
+    <div className={styles.formGroup}>
+      <label className={styles.label}>{label}</label>
+      <textarea
+        name={name}
+        value={value}
+        onChange={onChange}
+        className={`${styles.input} ${error ? styles.inputError : ""}`}
+        style={style}
+      />
+      {error ? <span className={styles.fieldError}>{error}</span> : null}
+    </div>
+  );
+}
+
 export default function ProfilePage() {
   const router = useRouter();
   const [user, setUser] = useState(null);
@@ -60,9 +114,9 @@ export default function ProfilePage() {
     fetchUser();
   }, [router]);
 
-  const handleEditChange = (e) => {
+  const updateFieldValue = (setter) => (e) => {
     const { name, value } = e.target;
-    setEditFormData((prev) => ({
+    setter((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -74,19 +128,8 @@ export default function ProfilePage() {
     }
   };
 
-  const handlePasswordChange = (e) => {
-    const { name, value } = e.target;
-    setPasswordFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: "",
-      }));
-    }
-  };
+  const handleEditChange = updateFieldValue(setEditFormData);
+  const handlePasswordChange = updateFieldValue(setPasswordFormData);
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
@@ -369,75 +412,44 @@ export default function ProfilePage() {
 
           {/* Edit Information Section */}
           <section className={styles.section}>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>Edit Information</h2>
-              {!editing && (
-                <button
-                  onClick={() => setEditing(true)}
-                  className={styles.actionButton}
-                >
-                  Edit
-                </button>
-              )}
-            </div>
+            <SectionHeader
+              title="Edit Information"
+              actionLabel={!editing ? "Edit" : null}
+              onAction={() => setEditing(true)}
+            />
 
             {editing && (
               <form onSubmit={handleUpdateProfile} className={styles.form}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>First Name</label>
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={editFormData.firstName}
-                    onChange={handleEditChange}
-                    className={`${styles.input} ${errors.firstName ? styles.inputError : ""}`}
-                  />
-                  {errors.firstName && (
-                    <span className={styles.fieldError}>{errors.firstName}</span>
-                  )}
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Last Name</label>
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={editFormData.lastName}
-                    onChange={handleEditChange}
-                    className={`${styles.input} ${errors.lastName ? styles.inputError : ""}`}
-                  />
-                  {errors.lastName && (
-                    <span className={styles.fieldError}>{errors.lastName}</span>
-                  )}
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Address</label>
-                  <textarea
-                    name="address"
-                    value={editFormData.address}
-                    onChange={handleEditChange}
-                    className={`${styles.input} ${errors.address ? styles.inputError : ""}`}
-                    style={{ minHeight: "100px", fontFamily: "inherit" }}
-                  />
-                  {errors.address && (
-                    <span className={styles.fieldError}>{errors.address}</span>
-                  )}
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Mobile Number</label>
-                  <input
-                    type="tel"
-                    name="mobileNumber"
-                    value={editFormData.mobileNumber}
-                    onChange={handleEditChange}
-                    className={`${styles.input} ${errors.mobileNumber ? styles.inputError : ""}`}
-                  />
-                  {errors.mobileNumber && (
-                    <span className={styles.fieldError}>{errors.mobileNumber}</span>
-                  )}
-                </div>
+                <FormField
+                  label="First Name"
+                  name="firstName"
+                  value={editFormData.firstName}
+                  onChange={handleEditChange}
+                  error={errors.firstName}
+                />
+                <FormField
+                  label="Last Name"
+                  name="lastName"
+                  value={editFormData.lastName}
+                  onChange={handleEditChange}
+                  error={errors.lastName}
+                />
+                <TextareaField
+                  label="Address"
+                  name="address"
+                  value={editFormData.address}
+                  onChange={handleEditChange}
+                  error={errors.address}
+                  style={{ minHeight: "100px", fontFamily: "inherit" }}
+                />
+                <FormField
+                  label="Mobile Number"
+                  name="mobileNumber"
+                  type="tel"
+                  value={editFormData.mobileNumber}
+                  onChange={handleEditChange}
+                  error={errors.mobileNumber}
+                />
 
                 <div className={styles.buttonGroup}>
                   <button type="submit" className={styles.saveButton}>
@@ -457,66 +469,41 @@ export default function ProfilePage() {
 
           {/* Change Password Section */}
           <section className={styles.section}>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>Change Password</h2>
-              {!changingPassword && (
-                <button
-                  onClick={() => setChangingPassword(true)}
-                  className={styles.actionButton}
-                >
-                  Change
-                </button>
-              )}
-            </div>
+            <SectionHeader
+              title="Change Password"
+              actionLabel={!changingPassword ? "Change" : null}
+              onAction={() => setChangingPassword(true)}
+            />
 
             {changingPassword && (
               <form onSubmit={handleChangePassword} className={styles.form}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Current Password</label>
-                  <input
-                    type="password"
-                    name="oldPassword"
-                    value={passwordFormData.oldPassword}
-                    onChange={handlePasswordChange}
-                    placeholder="••••••••"
-                    className={`${styles.input} ${errors.oldPassword ? styles.inputError : ""}`}
-                  />
-                  {errors.oldPassword && (
-                    <span className={styles.fieldError}>{errors.oldPassword}</span>
-                  )}
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>New Password</label>
-                  <input
-                    type="password"
-                    name="newPassword"
-                    value={passwordFormData.newPassword}
-                    onChange={handlePasswordChange}
-                    placeholder="••••••••"
-                    className={`${styles.input} ${errors.newPassword ? styles.inputError : ""}`}
-                  />
-                  {errors.newPassword && (
-                    <span className={styles.fieldError}>{errors.newPassword}</span>
-                  )}
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Confirm New Password</label>
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    value={passwordFormData.confirmPassword}
-                    onChange={handlePasswordChange}
-                    placeholder="••••••••"
-                    className={`${styles.input} ${errors.confirmPassword ? styles.inputError : ""}`}
-                  />
-                  {errors.confirmPassword && (
-                    <span className={styles.fieldError}>
-                      {errors.confirmPassword}
-                    </span>
-                  )}
-                </div>
+                <FormField
+                  label="Current Password"
+                  name="oldPassword"
+                  type="password"
+                  value={passwordFormData.oldPassword}
+                  onChange={handlePasswordChange}
+                  error={errors.oldPassword}
+                  placeholder="••••••••"
+                />
+                <FormField
+                  label="New Password"
+                  name="newPassword"
+                  type="password"
+                  value={passwordFormData.newPassword}
+                  onChange={handlePasswordChange}
+                  error={errors.newPassword}
+                  placeholder="••••••••"
+                />
+                <FormField
+                  label="Confirm New Password"
+                  name="confirmPassword"
+                  type="password"
+                  value={passwordFormData.confirmPassword}
+                  onChange={handlePasswordChange}
+                  error={errors.confirmPassword}
+                  placeholder="••••••••"
+                />
 
                 <div className={styles.buttonGroup}>
                   <button type="submit" className={styles.saveButton}>
