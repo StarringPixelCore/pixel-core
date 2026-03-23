@@ -27,7 +27,7 @@ export default function AboutPage() {
   ];
 
   const sources = [
-    "All pictures are from the internet. We do not claim ownership of any of the images used on this website.",
+    "All pictures are from the Internet. We do not claim ownership of any of the images used on this website.",
   ];
 
   return (
