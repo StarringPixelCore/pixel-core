@@ -3,7 +3,7 @@ import pool from "@/lib/db";
 export async function GET(req) {
   try {
     const query = `
-      SELECT id, name, description, price, badge, category, image_url, isBestSeller
+      SELECT id, name, description, price, badge, category, image_url, isBestSeller, isHomepageFeatured
       FROM products
       WHERE isHomepageFeatured = 1
       AND isEnabled = 1
