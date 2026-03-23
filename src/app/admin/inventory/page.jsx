@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
 import styles from "./inventory.module.css";
+import ProductFormModal from "./ProductFormModal";
 
 function formatPrice(value) {
   const n = Number(value);
@@ -13,10 +14,6 @@ function formatPrice(value) {
 
 function statusLabel(isEnabled) {
   return isEnabled === 1 || isEnabled === true ? "Enabled" : "Disabled";
-}
-
-function safeString(value) {
-  return typeof value === "string" ? value : "";
 }
 
 export default function SellerInventoryPage() {
@@ -32,15 +29,7 @@ export default function SellerInventoryPage() {
   const [modalMode, setModalMode] = useState("add"); // "add" | "edit"
   const [editingProductId, setEditingProductId] = useState(null);
   const [savingProduct, setSavingProduct] = useState(false);
-
-  const [form, setForm] = useState({
-    name: "",
-    description: "",
-    price: "",
-    badge: "",
-    category: "",
-    image_url: "",
-  });
+  const [modalInitialData, setModalInitialData] = useState(null);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -100,30 +89,20 @@ export default function SellerInventoryPage() {
   const openAddModal = () => {
     setModalMode("add");
     setEditingProductId(null);
-    setForm({
-      name: "",
-      description: "",
-      price: "",
-      badge: "",
-      category: "",
-      image_url: "",
-    });
+    setModalInitialData(null);
     setModalOpen(true);
   };
 
   const openEditModal = (product) => {
     setModalMode("edit");
     setEditingProductId(product.id);
-    setForm({
-      name: safeString(product.name),
-      description: safeString(product.description),
-      price:
-        product.price !== null && product.price !== undefined
-          ? String(product.price)
-          : "",
-      badge: safeString(product.badge),
-      category: safeString(product.category),
-      image_url: safeString(product.image_url),
+    setModalInitialData({
+      name: product.name || "",
+      description: product.description || "",
+      price: product.price !== null && product.price !== undefined ? String(product.price) : "",
+      badge: product.badge || "",
+      category: product.category || "",
+      image_url: product.image_url || "",
     });
     setModalOpen(true);
   };
@@ -132,21 +111,21 @@ export default function SellerInventoryPage() {
     if (savingProduct) return;
     setModalOpen(false);
     setEditingProductId(null);
+    setModalInitialData(null);
   };
 
-  const submitProduct = async (e) => {
-    e.preventDefault();
+  const handleModalSubmit = async (formData) => {
     setError("");
     setSavingProduct(true);
 
     try {
       const payload = {
-        name: form.name.trim(),
-        description: form.description.trim(),
-        price: Number(form.price),
-        badge: form.badge.trim(),
-        category: form.category.trim(),
-        image_url: form.image_url.trim(),
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        price: Number(formData.price),
+        badge: formData.badge.trim(),
+        category: formData.category.trim(),
+        image_url: formData.image_url.trim(),
       };
 
       if (modalMode === "add") {
@@ -163,6 +142,7 @@ export default function SellerInventoryPage() {
         }
         if (!res.ok) {
           setError(data.error || "Failed to add product.");
+          setSavingProduct(false);
           return;
         }
 
@@ -172,7 +152,7 @@ export default function SellerInventoryPage() {
           })
         );
 
-        setModalOpen(false);
+        closeModal();
       } else {
         const res = await fetch(`/api/seller/inventory/${editingProductId}`, {
           method: "POST",
@@ -187,6 +167,7 @@ export default function SellerInventoryPage() {
         }
         if (!res.ok) {
           setError(data.error || "Failed to update product.");
+          setSavingProduct(false);
           return;
         }
 
@@ -196,7 +177,7 @@ export default function SellerInventoryPage() {
           })
         );
 
-        setModalOpen(false);
+        closeModal();
       }
 
       // Re-sync list after create (and after edit, it's cheap enough).
@@ -442,130 +423,14 @@ export default function SellerInventoryPage() {
         )}
 
         {modalOpen ? (
-          <div className={styles.modalOverlay} role="dialog" aria-modal="true">
-            <div className={styles.modal}>
-              <div className={styles.modalHeader}>
-                <div>
-                  <div className={styles.modalTitle}>
-                    {modalMode === "add" ? "Add product" : "Edit product"}
-                  </div>
-                  <div className={styles.modalSubtitle}>
-                    {modalMode === "add"
-                      ? "Add new product to your inventory."
-                      : "Update product details."}
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  className={styles.iconClose}
-                  onClick={closeModal}
-                  disabled={savingProduct}
-                  aria-label="Close"
-                >
-                  ×
-                </button>
-              </div>
-
-              <form onSubmit={submitProduct}>
-                <div className={styles.modalBody}>
-                  <div className={styles.formGrid}>
-                    <div className={styles.field}>
-                      <label className={styles.label} htmlFor="name">
-                        Product Name
-                      </label>
-                      <input
-                        id="name"
-                        className={styles.input}
-                        value={form.name}
-                        onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
-                        required
-                      />
-                    </div>
-
-                    <div className={styles.field}>
-                      <label className={styles.label} htmlFor="price">
-                        Price
-                      </label>
-                      <input
-                        id="price"
-                        className={styles.input}
-                        value={form.price}
-                        onChange={(e) => setForm((prev) => ({ ...prev, price: e.target.value }))}
-                        required
-                        inputMode="decimal"
-                      />
-                    </div>
-
-                    <div className={styles.field}>
-                      <label className={styles.label} htmlFor="category">
-                        Category
-                      </label>
-                      <input
-                        id="category"
-                        className={styles.input}
-                        value={form.category}
-                        onChange={(e) => setForm((prev) => ({ ...prev, category: e.target.value }))}
-                      />
-                    </div>
-
-                    <div className={styles.field}>
-                      <label className={styles.label} htmlFor="badge">
-                        Badge (optional)
-                      </label>
-                      <input
-                        id="badge"
-                        className={styles.input}
-                        value={form.badge}
-                        onChange={(e) => setForm((prev) => ({ ...prev, badge: e.target.value }))}
-                      />
-                    </div>
-
-                    <div className={styles.field} style={{ gridColumn: "1 / -1" }}>
-                      <label className={styles.label} htmlFor="description">
-                        Description
-                      </label>
-                      <textarea
-                        id="description"
-                        className={styles.textarea}
-                        value={form.description}
-                        onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
-                        rows={4}
-                      />
-                    </div>
-
-                    <div className={styles.field} style={{ gridColumn: "1 / -1" }}>
-                      <label className={styles.label} htmlFor="image_url">
-                        Image URL
-                      </label>
-                      <input
-                        id="image_url"
-                        className={styles.input}
-                        value={form.image_url}
-                        onChange={(e) => setForm((prev) => ({ ...prev, image_url: e.target.value }))}
-                      />
-                      <div className={styles.helpText}>
-                        Use a valid URL (for example `/images/foo.jpg`).
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className={styles.modalActions}>
-                  <button
-                    type="button"
-                    className={styles.secondaryButton + " " + styles.button}
-                    onClick={closeModal}
-                    disabled={savingProduct}
-                  >
-                    Cancel
-                  </button>
-                  <button type="submit" className={styles.button} disabled={savingProduct}>
-                    {savingProduct ? "Saving..." : modalMode === "add" ? "Add product" : "Save changes"}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
+          <ProductFormModal
+            isOpen={modalOpen}
+            mode={modalMode}
+            onClose={closeModal}
+            onSubmit={handleModalSubmit}
+            initialData={modalInitialData}
+            isSaving={savingProduct}
+          />
         ) : null}
       </div>
     </main>
