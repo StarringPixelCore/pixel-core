@@ -164,7 +164,7 @@ export default function CheckoutPage() {
         })
       );
       window.dispatchEvent(new Event("cartUpdated"));
-      router.push("/profile");
+      router.push("/orders");
     } catch (err) {
       console.error(err);
       setFormError("Something went wrong. Please try again.");
