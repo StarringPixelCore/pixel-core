@@ -98,7 +98,13 @@ export default function Navbar() {
 
       {/* Right side - Cart and User/Login */}
       <div style={styles.rightLinks}>
-        <Link href="/cart" style={styles.iconButton}>
+        <Link
+          href="/cart"
+          style={{
+            ...styles.iconButton,
+            ...(pathname === "/cart" ? styles.iconButtonActive : {}),
+          }}
+        >
           <ShoppingCart size={20} />
           {cartCount > 0 && <span style={styles.badge}>{cartCount}</span>}
         </Link>
@@ -123,7 +129,12 @@ export default function Navbar() {
                 )}
                 <Link
                   href="/profile"
-                  style={styles.iconButton}
+                  style={{
+                    ...styles.iconButton,
+                    ...(pathname === "/profile"
+                      ? styles.iconButtonActive
+                      : {}),
+                  }}
                   title="Profile"
                 >
                   <User size={20} />
