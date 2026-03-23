@@ -1,0 +1,260 @@
+.page {
+  padding: 24px 22px 48px;
+  background: #f8f5f2;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.headerSection {
+  margin-bottom: 18px;
+}
+
+.detailHeaderRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.backButton {
+  display: inline-block;
+  font-size: 14px;
+  color: #9b673e;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.backButton:hover {
+  color: #8a5933;
+  text-decoration: underline;
+}
+
+.title {
+  font-size: 2.2rem;
+  color: #2f1a0f;
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  color: #8b6c57;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.tabsRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 18px 0 16px;
+}
+
+.tabButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-weight: 800;
+  cursor: pointer;
+  background: #e9dfd6;
+  color: #3f2819;
+  transition: all 0.2s;
+}
+
+.tabButtonActive {
+  background: #9b673e;
+  color: #fff;
+}
+
+.actionsRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-weight: 800;
+  cursor: pointer;
+  background: #9b673e;
+  color: #fff;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.primaryButton:hover {
+  background: #855432;
+}
+
+.primaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.summaryBar {
+  border: 1px solid #ddd1c7;
+  background: #fffdfb;
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.summaryValue {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #2f1a0f;
+}
+
+.summaryMeta {
+  color: #8a6f5a;
+  font-weight: 600;
+}
+
+.tableWrapper {
+  background: #fffdfb;
+  border: 1px solid #ddd1c7;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.th {
+  background: #9b673e;
+  color: #fff;
+  text-align: left;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  font-weight: 900;
+}
+
+.td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #eadfd6;
+  vertical-align: top;
+  color: #3f2819;
+  font-size: 0.95rem;
+}
+
+.tr:last-child .td {
+  border-bottom: none;
+}
+
+.itemsCell {
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #8a6f5a;
+  font-size: 0.9rem;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  border: 1px solid #ddd1c7;
+  background: #f0e6dc;
+  color: #5c4030;
+  text-transform: capitalize;
+}
+
+.emptyState {
+  padding: 20px 16px;
+  text-align: center;
+  color: #8a6f5a;
+}
+
+.accessDenied {
+  padding: 40px 16px;
+  text-align: center;
+}
+
+.accessDeniedTitle {
+  margin: 0 0 10px 0;
+  font-size: 1.8rem;
+  color: #2f1a0f;
+}
+
+.accessDeniedText {
+  margin: 0;
+  color: #8b6c57;
+  line-height: 1.5;
+}
+
+.secondaryLink {
+  display: inline-block;
+  margin-top: 16px;
+  background: #e9dfd6;
+  color: #3f2819;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.section {
+  margin-top: 18px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+  margin: 8px 0 10px;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 1.35rem;
+  color: #2f1a0f;
+  font-weight: 900;
+}
+
+.sectionSubtitle {
+  margin-top: 4px;
+  color: #8a6f5a;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.sectionActions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.sectionTable {
+  margin-top: 10px;
+}
+
