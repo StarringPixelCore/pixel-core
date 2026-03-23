@@ -199,6 +199,17 @@
   flex-shrink: 0;
 }
 
+.inputError {
+  border-color: #d32f2f;
+  background-color: #ffebee;
+}
+
+.fieldError {
+  font-size: 13px;
+  color: #d32f2f;
+  margin-top: 2px;
+}
+
 .productName {
   font-weight: 900;
   color: #2f1a0f;

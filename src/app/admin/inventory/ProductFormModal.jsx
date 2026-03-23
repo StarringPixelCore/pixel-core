@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { validateProductForm } from "@/lib/validation";
 import styles from "./inventory.module.css";
 
 export default function ProductFormModal({
@@ -21,14 +22,32 @@ export default function ProductFormModal({
       image_url: "",
     }
   );
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setErrors({});
+
+    // Frontend validation
+    const validationErrors = validateProductForm(form);
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     onSubmit(form);
   };
 
@@ -69,11 +88,12 @@ export default function ProductFormModal({
                 <input
                   id="name"
                   name="name"
-                  className={styles.input}
+                  className={`${styles.input} ${errors.name ? styles.inputError : ""}`}
                   value={form.name}
                   onChange={handleChange}
-                  required
+                
                 />
+                {errors.name && <span className={styles.fieldError}>{errors.name}</span>}
               </div>
 
               <div className={styles.field}>
@@ -83,12 +103,13 @@ export default function ProductFormModal({
                 <input
                   id="price"
                   name="price"
-                  className={styles.input}
+                  className={`${styles.input} ${errors.price ? styles.inputError : ""}`}
                   value={form.price}
                   onChange={handleChange}
-                  required
+                  
                   inputMode="decimal"
                 />
+                {errors.price && <span className={styles.fieldError}>{errors.price}</span>}
               </div>
 
               <div className={styles.field}>
@@ -98,10 +119,11 @@ export default function ProductFormModal({
                 <input
                   id="category"
                   name="category"
-                  className={styles.input}
+                  className={`${styles.input} ${errors.category ? styles.inputError : ""}`}
                   value={form.category}
                   onChange={handleChange}
                 />
+                {errors.category && <span className={styles.fieldError}>{errors.category}</span>}
               </div>
 
               <div className={styles.field}>
@@ -111,10 +133,11 @@ export default function ProductFormModal({
                 <input
                   id="badge"
                   name="badge"
-                  className={styles.input}
+                  className={`${styles.input} ${errors.badge ? styles.inputError : ""}`}
                   value={form.badge}
                   onChange={handleChange}
                 />
+                {errors.badge && <span className={styles.fieldError}>{errors.badge}</span>}
               </div>
 
               <div className={styles.field} style={{ gridColumn: "1 / -1" }}>
@@ -124,11 +147,12 @@ export default function ProductFormModal({
                 <textarea
                   id="description"
                   name="description"
-                  className={styles.textarea}
+                  className={`${styles.textarea} ${errors.description ? styles.inputError : ""}`}
                   value={form.description}
                   onChange={handleChange}
                   rows={4}
                 />
+                {errors.description && <span className={styles.fieldError}>{errors.description}</span>}
               </div>
 
               <div className={styles.field} style={{ gridColumn: "1 / -1" }}>
@@ -138,10 +162,11 @@ export default function ProductFormModal({
                 <input
                   id="image_url"
                   name="image_url"
-                  className={styles.input}
+                  className={`${styles.input} ${errors.image_url ? styles.inputError : ""}`}
                   value={form.image_url}
                   onChange={handleChange}
                 />
+                {errors.image_url && <span className={styles.fieldError}>{errors.image_url}</span>}
                 <div className={styles.helpText}>
                   Use a valid URL (for example `/images/foo.jpg`).
                 </div>

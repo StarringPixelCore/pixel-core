@@ -95,3 +95,70 @@ export const validatePasswordChange = (oldPassword, newPassword, confirmPassword
 
   return errors;
 };
+
+export const validateProductName = (name) => {
+  if (!name) return "Product name is required";
+  const trimmed = name.trim();
+  if (trimmed.length < 2) return "Product name must be at least 2 characters";
+  if (trimmed.length > 100) return "Product name must be less than 100 characters";
+  if (!/^[A-Z]/.test(trimmed)) return "Product name must start with a capital letter";
+  return "";
+};
+
+export const validateProductDescription = (description) => {
+  if (!description) return ""; // optional
+  const trimmed = description.trim();
+  if (trimmed.length > 500) return "Description must be less than 500 characters";
+  return "";
+};
+
+export const validateProductPrice = (price) => {
+  if (price === undefined || price === null || price === "") return "Price is required";
+  const num = Number(price);
+  if (isNaN(num) || !isFinite(num)) return "Price must be a valid number";
+  if (num <= 0) return "Price must be greater than 0";
+  if (num > 10000) return "Price must be less than or equal to 10000";
+  return "";
+};
+
+export const validateProductBadge = (badge) => {
+  if (!badge) return ""; // optional
+  const trimmed = badge.trim();
+  if (trimmed.length > 50) return "Badge must be less than 50 characters";
+  return "";
+};
+
+export const validateProductCategory = (category) => {
+  if (!category) return ""; // optional
+  const trimmed = category.trim();
+  if (trimmed.length < 2) return "Category must be at least 2 characters";
+  if (trimmed.length > 50) return "Category must be less than 50 characters";
+  return "";
+};
+
+export const validateProductImageUrl = (imageUrl) => {
+  if (!imageUrl) return ""; // optional
+  const trimmed = imageUrl.trim();
+  if (trimmed.length > 200) return "Image URL must be less than 200 characters";
+  try {
+    new URL(trimmed);
+  } catch {
+    return "Image URL must be a valid URL";
+  }
+  return "";
+};
+
+export const validateProductForm = (formData) => {
+  const errors = {};
+
+  errors.name = validateProductName(formData.name);
+  errors.description = validateProductDescription(formData.description);
+  errors.price = validateProductPrice(formData.price);
+  errors.badge = validateProductBadge(formData.badge);
+  errors.category = validateProductCategory(formData.category);
+  errors.image_url = validateProductImageUrl(formData.image_url);
+
+  Object.keys(errors).forEach((key) => !errors[key] && delete errors[key]);
+
+  return errors;
+};

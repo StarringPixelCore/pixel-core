@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import pool from "@/lib/db";
 import { getSessionUser } from "@/lib/session";
+import { validateProductForm } from "@/lib/validation";
 
 function getSellerFromSession(req) {
   const session = getSessionUser(req);
@@ -113,17 +114,24 @@ export async function POST(req) {
 
     const { name, description, price, badge, category, image_url } = body || {};
 
-    if (!name || typeof name !== "string") {
-      return NextResponse.json({ error: "Name is required" }, { status: 400 });
+    // Validate form
+    const errors = validateProductForm({ name, description, price, badge, category, image_url });
+    if (Object.keys(errors).length > 0) {
+      return NextResponse.json({ errors }, { status: 400 });
     }
 
-    const parsedPrice = Number(price);
-    if (!Number.isFinite(parsedPrice) || parsedPrice < 0) {
-      return NextResponse.json(
-        { error: "Valid price is required" },
-        { status: 400 }
-      );
-    }
+    // Remove the old validation
+    // if (!name || typeof name !== "string") {
+    //   return NextResponse.json({ error: "Name is required" }, { status: 400 });
+    // }
+
+    // const parsedPrice = Number(price);
+    // if (!Number.isFinite(parsedPrice) || parsedPrice < 0) {
+    //   return NextResponse.json(
+    //     { error: "Valid price is required" },
+    //     { status: 400 }
+    //   );
+    // }
 
     const safeBadge = typeof badge === "string" ? badge : "";
     const safeDescription = typeof description === "string" ? description : "";
@@ -136,7 +144,7 @@ export async function POST(req) {
         INSERT INTO products (name, description, price, badge, category, image_url, isEnabled)
         VALUES (?, ?, ?, ?, ?, ?, 1)
       `,
-      [name, safeDescription, parsedPrice, safeBadge, safeCategory, safeImageUrl]
+      [name.trim(), safeDescription.trim(), Number(price), safeBadge.trim(), safeCategory?.trim() || null, safeImageUrl?.trim() || null]
     );
 
     const insertedId = result.insertId;
