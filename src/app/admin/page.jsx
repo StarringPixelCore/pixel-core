@@ -114,6 +114,22 @@ export default function AdminPage() {
               Manage Inventory
             </Link>
           </div>
+          <div style={{ marginBottom: 18 }}>
+            <Link
+              href="/admin/reports"
+              style={{
+                display: "inline-block",
+                backgroundColor: "#e9dfd6",
+                color: "#3f2819",
+                padding: "10px 18px",
+                borderRadius: 999,
+                fontWeight: 700,
+                textDecoration: "none",
+              }}
+            >
+              Reports
+            </Link>
+          </div>
           <h1>Seller - Manage Featured Products</h1>
           <p>Toggle products to feature them on the homepage</p>
 

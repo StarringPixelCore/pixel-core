@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@react-pdf/renderer": "^4.3.2",
     "bcryptjs": "^3.0.3",
     "lucide-react": "^0.577.0",
     "mysql2": "^3.19.1",
