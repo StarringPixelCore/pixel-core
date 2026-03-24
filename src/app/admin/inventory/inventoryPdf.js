@@ -1,4 +1,9 @@
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Document, Font, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+
+Font.register({
+  family: "NotoSans",
+  src: "https://cdn.jsdelivr.net/gh/googlefonts/noto-fonts@main/hinted/ttf/NotoSans/NotoSans-Regular.ttf",
+});
 
 function formatCurrency(value) {
   const n = Number(value);
@@ -56,7 +61,7 @@ const pdfStyles = StyleSheet.create({
   page: {
     padding: 28,
     fontSize: 10,
-    fontFamily: "Helvetica",
+    fontFamily: "NotoSans",
     lineHeight: 1.3,
   },
   header: {
