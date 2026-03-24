@@ -12,8 +12,11 @@ try {
 // Create a transporter for Gmail
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
+  // Some hosting providers restrict outbound ports like 465.
+  // Gmail supports SMTP on 587 (STARTTLS).
+  port: 587,
+  secure: false, // use STARTTLS
+  requireTLS: true,
   auth: {
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_PASSWORD, // Use a Google App Password if you have 2FA enabled
