@@ -240,3 +240,52 @@
   line-height: 1.5;
 }
 
+@media (max-width: 900px) {
+  .page {
+    padding: 18px 14px 32px;
+  }
+
+  .title {
+    font-size: 1.9rem;
+  }
+
+  .field {
+    min-width: 220px;
+  }
+
+  .orderHeader {
+    flex-direction: column;
+  }
+
+  .badgeRow {
+    justify-content: flex-start;
+  }
+
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .field {
+    min-width: 100%;
+  }
+
+  .button,
+  .secondaryButton {
+    width: 100%;
+  }
+
+  .actionsRow {
+    width: 100%;
+  }
+
+  .orderBody {
+    padding: 14px;
+  }
+
+  .orderHeader {
+    padding: 14px;
+  }
+}
+

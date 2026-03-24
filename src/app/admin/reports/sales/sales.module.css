@@ -286,3 +286,60 @@
   font-weight: 700;
 }
 
+@media (max-width: 960px) {
+  .page {
+    padding: 18px 14px 32px;
+  }
+
+  .title {
+    font-size: 1.9rem;
+  }
+
+  .actionsRow {
+    justify-content: flex-start;
+  }
+
+  .summaryBar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .table {
+    min-width: 860px;
+  }
+
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sectionActions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 600px) {
+  .tabsRow {
+    gap: 8px;
+  }
+
+  .tabButton {
+    width: calc(50% - 4px);
+    padding: 9px 12px;
+  }
+
+  .primaryButton {
+    width: 100%;
+  }
+
+  .pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .paginationButton {
+    width: 100%;
+  }
+}
+

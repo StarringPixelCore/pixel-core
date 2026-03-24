@@ -475,3 +475,78 @@
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+@media (max-width: 900px) {
+  .container {
+    padding: 18px;
+  }
+
+  .profileWrapper {
+    padding: 24px;
+  }
+
+  .header {
+    align-items: flex-start;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 12px;
+  }
+
+  .profileWrapper {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .header {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .profilePictureSection {
+    align-self: center;
+  }
+
+  .heading {
+    font-size: 26px;
+  }
+
+  .section {
+    padding: 16px;
+  }
+
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+  }
+
+  .sellerLinks {
+    gap: 8px;
+  }
+
+  .ordersLink {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .modal {
+    padding: 20px 14px;
+  }
+
+  .modalButtons {
+    flex-direction: column;
+  }
+}
