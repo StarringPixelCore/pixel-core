@@ -258,3 +258,31 @@
   margin-top: 10px;
 }
 
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.paginationButton {
+  border: 1px solid #d7c7b8;
+  background: #f7f1eb;
+  color: #3f2819;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.paginationButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.paginationInfo {
+  color: #8a6f5a;
+  font-weight: 700;
+}
+

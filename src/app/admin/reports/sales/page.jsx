@@ -15,66 +15,100 @@ import {
   formatDateRange,
 } from "./salesReportFormatters";
 
-function SalesTable({ data, emptyText, loadingLists }) {
+const ORDERS_PER_PAGE = 3;
+
+function SalesTable({ data, emptyText, loadingLists, currentPage, onPageChange }) {
   const sales = data?.sales || [];
+  const totalPages = Math.max(1, Math.ceil(sales.length / ORDERS_PER_PAGE));
+  const safeCurrentPage = Math.min(Math.max(currentPage, 1), totalPages);
+  const startIndex = (safeCurrentPage - 1) * ORDERS_PER_PAGE;
+  const paginatedSales = sales.slice(startIndex, startIndex + ORDERS_PER_PAGE);
 
   return (
-    <div className={styles.tableWrapper}>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th className={styles.th}>Order ID</th>
-            <th className={styles.th}>Buyer</th>
-            <th className={styles.th}>Date</th>
-            <th className={styles.th}>Payment</th>
-            <th className={styles.th}>Items</th>
-            <th className={styles.th}>Status</th>
-            <th className={styles.th}>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loadingLists && !data ? (
+    <>
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
+          <thead>
             <tr>
-              <td className={styles.td} colSpan={7}>
-                Loading...
-              </td>
+              <th className={styles.th}>Order ID</th>
+              <th className={styles.th}>Buyer</th>
+              <th className={styles.th}>Date</th>
+              <th className={styles.th}>Payment</th>
+              <th className={styles.th}>Items</th>
+              <th className={styles.th}>Status</th>
+              <th className={styles.th}>Amount</th>
             </tr>
-          ) : sales.length ? (
-            sales.map((s) => (
-              <tr key={s.id} className={styles.tr}>
-                <td className={styles.td}>{s.id}</td>
-                <td className={styles.td}>
-                  {s.buyer?.firstName} {s.buyer?.lastName}
-                  <div style={{ color: "#8a6f5a", fontSize: "0.85rem" }}>{s.buyer?.email}</div>
-                </td>
-                <td className={styles.td}>{formatDate(s.createdAt)}</td>
-                <td className={styles.td}>
-                  {safePaymentLabel(s.paymentMethod, PAYMENT_LABEL)}
-                  {s.referenceNumber ? (
-                    <div style={{ color: "#8a6f5a", fontSize: "0.85rem" }}>{s.referenceNumber}</div>
-                  ) : null}
-                </td>
-                <td className={styles.td}>
-                  <div className={styles.itemsCell}>{s.itemsSummary || "-"}</div>
-                </td>
-                <td className={styles.td}>
-                  <span className={styles.statusBadge}>{formatStatusLabel(s.orderStatus)}</span>
-                </td>
-                <td className={styles.td} style={{ fontWeight: 900 }}>
-                  {formatCurrency(s.totalAmount)}
+          </thead>
+          <tbody>
+            {loadingLists && !data ? (
+              <tr>
+                <td className={styles.td} colSpan={7}>
+                  Loading...
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td className={styles.td} colSpan={7}>
-                <div className={styles.emptyState}>{emptyText}</div>
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+            ) : sales.length ? (
+              paginatedSales.map((s) => (
+                <tr key={s.id} className={styles.tr}>
+                  <td className={styles.td}>{s.id}</td>
+                  <td className={styles.td}>
+                    {s.buyer?.firstName} {s.buyer?.lastName}
+                    <div style={{ color: "#8a6f5a", fontSize: "0.85rem" }}>{s.buyer?.email}</div>
+                  </td>
+                  <td className={styles.td}>{formatDate(s.createdAt)}</td>
+                  <td className={styles.td}>
+                    {safePaymentLabel(s.paymentMethod, PAYMENT_LABEL)}
+                    {s.referenceNumber ? (
+                      <div style={{ color: "#8a6f5a", fontSize: "0.85rem" }}>{s.referenceNumber}</div>
+                    ) : null}
+                  </td>
+                  <td className={styles.td}>
+                    <div className={styles.itemsCell}>{s.itemsSummary || "-"}</div>
+                  </td>
+                  <td className={styles.td}>
+                    <span className={styles.statusBadge}>{formatStatusLabel(s.orderStatus)}</span>
+                  </td>
+                  <td className={styles.td} style={{ fontWeight: 900 }}>
+                    {formatCurrency(s.totalAmount)}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td className={styles.td} colSpan={7}>
+                  <div className={styles.emptyState}>{emptyText}</div>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {sales.length > ORDERS_PER_PAGE ? (
+        <div className={styles.pagination}>
+          <button
+            type="button"
+            className={styles.paginationButton}
+            onClick={() => onPageChange(safeCurrentPage - 1)}
+            disabled={safeCurrentPage <= 1 || loadingLists}
+          >
+            ← Previous
+          </button>
+
+          <span className={styles.paginationInfo}>
+            Page {safeCurrentPage} of {totalPages}
+          </span>
+
+          <button
+            type="button"
+            className={styles.paginationButton}
+            onClick={() => onPageChange(safeCurrentPage + 1)}
+            disabled={safeCurrentPage >= totalPages || loadingLists}
+          >
+            Next →
+          </button>
+        </div>
+      ) : null}
+    </>
   );
 }
 
@@ -87,6 +121,8 @@ function SalesRangeSection({
   exporting,
   onExport,
   emptyText,
+  currentPage,
+  onPageChange,
 }) {
   return (
     <div className={styles.section}>
@@ -120,7 +156,13 @@ function SalesRangeSection({
         <div className={styles.summaryMeta}>{formatDateRange(data?.startAt, data?.endAt)}</div>
       </div>
 
-      <SalesTable data={data} emptyText={emptyText} loadingLists={loadingLists} />
+      <SalesTable
+        data={data}
+        emptyText={emptyText}
+        loadingLists={loadingLists}
+        currentPage={currentPage}
+        onPageChange={onPageChange}
+      />
     </div>
   );
 }
@@ -131,6 +173,8 @@ export default function SalesReportPage() {
   const [error, setError] = useState("");
   const [dayData, setDayData] = useState(null);
   const [monthData, setMonthData] = useState(null);
+  const [dayPage, setDayPage] = useState(1);
+  const [monthPage, setMonthPage] = useState(1);
   const [loadingLists, setLoadingLists] = useState(false);
   const [exporting, setExporting] = useState(false);
 
@@ -168,6 +212,8 @@ export default function SalesReportPage() {
 
         setDayData(dayRes.data);
         setMonthData(monthRes.data);
+        setDayPage(1);
+        setMonthPage(1);
       })
       .catch((e) => {
         console.error(e);
@@ -277,6 +323,8 @@ export default function SalesReportPage() {
           exporting={exporting}
           onExport={handleExportPdfFor}
           emptyText="No sales found for today."
+          currentPage={dayPage}
+          onPageChange={setDayPage}
         />
 
         <SalesRangeSection
@@ -288,6 +336,8 @@ export default function SalesReportPage() {
           exporting={exporting}
           onExport={handleExportPdfFor}
           emptyText="No sales found for this month."
+          currentPage={monthPage}
+          onPageChange={setMonthPage}
         />
       </div>
     </main>
