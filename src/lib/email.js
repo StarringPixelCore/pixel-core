@@ -1,8 +1,7 @@
 const brevo = require('@getbrevo/brevo');
 
 const apiInstance = new brevo.TransactionalEmailsApi();
-const apiKey = apiInstance.authentications['api-key'];
-apiKey.apiKey = process.env.BREVO_API_KEY;
+apiInstance.authentications.apiKey.apiKey = process.env.BREVO_API_KEY;
 
 const FROM_EMAIL = process.env.BREVO_FROM_EMAIL;
 const FROM_NAME = process.env.BREVO_FROM_NAME || 'Cocoir';
