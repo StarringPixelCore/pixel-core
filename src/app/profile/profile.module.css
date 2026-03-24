@@ -99,22 +99,38 @@
 }
 
 .ordersLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 14px;
   color: #9b673e;
   font-weight: 600;
   text-decoration: none;
-  transition: color 0.2s;
+  background: #f7eee7;
+  border: 1px solid #e3d4c6;
+  border-radius: 999px;
+  padding: 8px 12px;
+  transition: all 0.2s ease;
 }
 
 .ordersLink:hover {
-  color: #8a5933;
-  text-decoration: underline;
+  color: #7a4e2f;
+  background: #efe0d4;
+  border-color: #d5bea9;
+  transform: translateY(-1px);
+  text-decoration: none;
 }
 
 .sellerLinks {
   display: flex;
-  gap: 24px;
+  flex-wrap: wrap;
+  gap: 10px;
   margin: 12px 0 0 0;
+}
+
+.linkIcon {
+  font-size: 14px;
+  line-height: 1;
 }
 
 .sectionsContainer {
@@ -342,7 +358,7 @@
 
 .backLink:hover {
   color: #8a5933;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .logoutButton {

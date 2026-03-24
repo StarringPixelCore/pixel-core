@@ -4,6 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./profile.module.css";
+import {
+  notifyAuthChanged,
+  notifyCartUpdated,
+  showToast,
+} from "@/utils/notifications";
 
 function SectionHeader({ title, actionLabel, onAction }) {
   return (
@@ -268,6 +273,13 @@ export default function ProfilePage() {
   const handleLogout = async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
+      notifyAuthChanged();
+      notifyCartUpdated();
+      showToast({
+        title: "Logged out",
+        message: "Logged out successfully",
+        type: "success",
+      });
       router.push("/");
     } catch (error) {
       console.error("Logout error:", error);
@@ -326,7 +338,7 @@ export default function ProfilePage() {
     <main className={styles.container}>
       <div className={styles.profileWrapper}>
         <div className={styles.topNavigation}>
-          <Link href="/" className={styles.backLink}>
+          <Link href="/" className={styles.backLink} >
             ← Back to Home
           </Link>
         </div>
@@ -337,23 +349,28 @@ export default function ProfilePage() {
             {user.role === "Buyer" && (
               <p className={styles.ordersLinkWrap}>
                 <Link href="/orders" className={styles.ordersLink}>
-                  My Orders →
+                  <span className={styles.linkIcon} aria-hidden="true">📦</span>
+                  <span>My Orders</span>
                 </Link>
               </p>
             )}
             {user.role === "Seller" && (
               <div className={styles.sellerLinks}>
                 <Link href="/products" className={styles.ordersLink}>
-                  My Products →
-                </Link> 
+                  <span className={styles.linkIcon} aria-hidden="true">🛍️</span>
+                  <span>My Products</span>
+                </Link>
                 <Link href="/admin/orders" className={styles.ordersLink}>
-                  Manage Orders →
+                  <span className={styles.linkIcon} aria-hidden="true">🧾</span>
+                  <span>Manage Orders</span>
                 </Link>
                 <Link href="/admin/inventory" className={styles.ordersLink}>
-                  Manage Inventory →
+                  <span className={styles.linkIcon} aria-hidden="true">📋</span>
+                  <span>Manage Inventory</span>
                 </Link>
                 <Link href="/admin/reports" className={styles.ordersLink}>
-                  Reports →
+                  <span className={styles.linkIcon} aria-hidden="true">📊</span>
+                  <span>Reports</span>
                 </Link>
               </div>
             )}
