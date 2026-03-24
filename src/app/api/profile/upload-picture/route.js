@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { v2 as cloudinary } from "cloudinary";
 import pool from "@/lib/db";
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 function getSessionUser(req) {
   const sessionCookie = req.cookies.get("session");
@@ -40,31 +46,35 @@ export async function POST(req) {
       );
     }
 
-    // Create filename with timestamp
-    const timestamp = Date.now();
-    const extension = file.name.split(".").pop();
-    const filename = `profile_${session.userId}_${timestamp}.${extension}`;
-    
-    // Save to public/uploads directory
-    const uploadDir = path.join(process.cwd(), "public", "uploads", "profiles");
-    await mkdir(uploadDir, { recursive: true });
-    
-    const filepath = path.join(uploadDir, filename);
+    // Convert file to base64
     const buffer = await file.arrayBuffer();
-    await writeFile(filepath, Buffer.from(buffer));
+    const base64 = Buffer.from(buffer).toString("base64");
+    const dataUri = `data:${file.type};base64,${base64}`;
 
-    // Save filename to database
-    const picturePath = `/uploads/profiles/${filename}`;
+    // Upload to Cloudinary
+    const uploadResult = await cloudinary.uploader.upload(dataUri, {
+      folder: "cocoir/profiles",
+      public_id: `profile_${session.userId}`,
+      overwrite: true, // replaces old profile picture automatically
+      transformation: [
+        { width: 400, height: 400, crop: "fill", gravity: "face" }, // auto crop to face
+      ],
+    });
+
+    const pictureUrl = uploadResult.secure_url;
+
+    // Save Cloudinary URL to database
     await pool.query(
       "UPDATE users SET profile_picture = ? WHERE id = ?",
-      [picturePath, session.userId]
+      [pictureUrl, session.userId]
     );
 
     return NextResponse.json({
       success: true,
       message: "Profile picture updated successfully",
-      profilePicture: picturePath,
+      profilePicture: pictureUrl,
     });
+
   } catch (error) {
     console.error("Upload profile picture error:", error);
     return NextResponse.json(

@@ -97,6 +97,9 @@ Cocoir is an e‑commerce platform dedicated to promoting sustainable living thr
 #### Databases
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 
+#### Deployment
+![Railway](https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white)
+
 ## Resources
 
 | Title        | Purpose                                                                       | Link          |
