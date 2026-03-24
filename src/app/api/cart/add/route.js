@@ -5,7 +5,13 @@ import { getSessionUser } from "@/lib/session";
 export async function POST(req) {
   try {
     const session = getSessionUser(req);
-    const userId = session?.userId ?? 1;
+    if (!session?.userId) {
+      return NextResponse.json(
+        { error: "Please log in to add items to cart" },
+        { status: 401 }
+      );
+    }
+    const userId = session.userId;
     const { productId } = await req.json();
 
     if (!productId) {

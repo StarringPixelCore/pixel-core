@@ -5,7 +5,10 @@ import { getSessionUser } from "@/lib/session";
 export async function GET(req) {
   try {
     const session = getSessionUser(req);
-    const userId = session?.userId ?? 1;
+    if (!session?.userId) {
+      return NextResponse.json({ items: [], count: 0 }, { status: 401 });
+    }
+    const userId = session.userId;
 
     const [cartRows] = await pool.query(
       "SELECT id FROM cart WHERE user_id = ? LIMIT 1",

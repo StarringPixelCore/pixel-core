@@ -5,7 +5,13 @@ import { getSessionUser } from "@/lib/session";
 export async function DELETE(req) {
   try {
     const session = getSessionUser(req);
-    const userId = session?.userId ?? 1;
+    if (!session?.userId) {
+      return NextResponse.json(
+        { error: "Please log in to remove cart items" },
+        { status: 401 }
+      );
+    }
+    const userId = session.userId;
 
     const { itemId } = await req.json();
 

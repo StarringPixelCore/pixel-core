@@ -5,7 +5,13 @@ import { getSessionUser } from "@/lib/session";
 export async function PUT(req) {
   try {
     const session = getSessionUser(req);
-    const userId = session?.userId ?? 1;
+    if (!session?.userId) {
+      return NextResponse.json(
+        { error: "Please log in to update cart" },
+        { status: 401 }
+      );
+    }
+    const userId = session.userId;
 
     const { itemId, action } = await req.json();
 
