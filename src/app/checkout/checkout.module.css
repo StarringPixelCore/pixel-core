@@ -250,6 +250,10 @@
   margin-top: 4px;
 }
 
+.summaryRow span,
+.summaryTotal span {  color: #2f1a0f;
+}
+
 .divider {
   height: 1px;
   background: #ddd1c7;
