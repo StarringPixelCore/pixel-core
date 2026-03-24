@@ -93,7 +93,7 @@ export default function LoginPage() {
     <main className={styles.container}>
       <div className={styles.formWrapper}>
         <h1 className={styles.heading}>Login</h1>
-        <p className={styles.subheading}>Welcome back to Cocoir</p>
+        <p className={styles.subheading}>Welcome back to Cocoir!</p>
 
         {successMessage && (
           <div className={styles.successMessage}>{successMessage}</div>
