@@ -119,7 +119,7 @@ export default function Footer() {
         <p className={styles.disclaimer}>
           For educational purposes only. No copyright infringement intended.
         </p>
-        <p className={styles.copyright}>© 2025 PixelCore. All rights reserved.</p>
+        <p className={styles.copyright}>© 2026 PixelCore. All rights reserved.</p>
       </div>
     </footer>
   );
