@@ -63,11 +63,26 @@
   padding: 10px 18px;
   border-radius: 999px;
   cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
 }
 
 .activeCategory {
   background: #9b673e;
   color: #fff;
+}
+
+.categoryBtn:hover {
+  background: #dbc9ba;
+}
+
+.categoryBtn:focus-visible {
+  outline: 2px solid #9b673e;
+  outline-offset: 2px;
+}
+
+.activeCategory:hover {
+  background: #855432;
 }
 
 .grid {
@@ -211,6 +226,23 @@
   }
 
   .searchBox {
+    width: 100%;
+  }
+
+  .categories {
+    gap: 8px;
+  }
+
+  .categoryBtn {
+    width: calc(50% - 4px);
+    text-align: center;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .categoryBtn {
     width: 100%;
   }
 }

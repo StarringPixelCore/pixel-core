@@ -12,6 +12,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  text-decoration: none;
 }
 
 .logoImage {
@@ -41,11 +42,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
 }
 
 .activeLink {
   background-color: #8b5e3c;
   color: #fff;
+}
+
+.navLink:hover {
+  background-color: #f3e7dc;
+  color: #2f1a0f;
+}
+
+.navLink:focus-visible {
+  outline: 2px solid #9b673e;
+  outline-offset: 2px;
 }
 
 .rightLinks {
@@ -75,6 +87,22 @@
   color: #fff;
 }
 
+.iconButton:hover {
+  background-color: #e8d8ca;
+  color: #2f1a0f;
+  transform: translateY(-1px);
+}
+
+.iconButton:focus-visible {
+  outline: 2px solid #9b673e;
+  outline-offset: 2px;
+}
+
+.iconButtonActive:hover {
+  background-color: #7a5134;
+  color: #fff;
+}
+
 .loginButton {
   padding: 8px 24px;
   background-color: #8b5e3c;
@@ -85,6 +113,15 @@
   font-size: 14px;
   transition: all 0.2s;
   cursor: pointer;
+}
+
+.loginButton:hover {
+  background-color: #7a5134;
+}
+
+.loginButton:focus-visible {
+  outline: 2px solid #9b673e;
+  outline-offset: 2px;
 }
 
 .badge {
@@ -103,4 +140,50 @@
   padding: 0 5px;
   font-weight: 700;
   line-height: 1;
+}
+
+@media (max-width: 900px) {
+  .nav {
+    flex-wrap: wrap;
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .leftLinks {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .rightLinks {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 560px) {
+  .logoImage {
+    width: 52px;
+    height: 52px;
+  }
+
+  .siteName {
+    font-size: 18px;
+  }
+
+  .navLink {
+    padding: 7px 12px;
+    font-size: 14px;
+  }
+
+  .iconButton {
+    width: 38px;
+    height: 38px;
+  }
+
+  .loginButton {
+    padding: 8px 16px;
+  }
 }
