@@ -89,28 +89,82 @@ export async function POST(req) {
   try {
     await conn.beginTransaction();
 
-    const [cartRows] = await conn.query(
-      "SELECT id FROM cart WHERE user_id = ? LIMIT 1",
-      [userId]
-    );
+    const buyNow = body.buyNow || null;
+    let cartId = null;
+    let items = [];
 
-    if (cartRows.length === 0) {
-      await conn.rollback();
-      return NextResponse.json({ error: "Your cart is empty" }, { status: 400 });
+    if (buyNow) {
+      const productId = Number(buyNow.productId);
+      const quantity = Number(buyNow.quantity);
+
+      if (
+        !Number.isInteger(productId) ||
+        productId <= 0 ||
+        !Number.isInteger(quantity) ||
+        quantity <= 0
+      ) {
+        await conn.rollback();
+        return NextResponse.json(
+          { error: "Invalid buy now item details" },
+          { status: 400 }
+        );
+      }
+
+      const [productRows] = await conn.query(
+        `
+        SELECT id, name, image_url, price
+        FROM products
+        WHERE id = ? AND isEnabled = 1
+        LIMIT 1
+        `,
+        [productId]
+      );
+
+      if (productRows.length === 0) {
+        await conn.rollback();
+        return NextResponse.json(
+          { error: "This product is unavailable" },
+          { status: 400 }
+        );
+      }
+
+      const product = productRows[0];
+      items = [
+        {
+          id: null,
+          product_id: product.id,
+          quantity,
+          price: product.price,
+          name: product.name,
+          image_url: product.image_url,
+        },
+      ];
+    } else {
+      const [cartRows] = await conn.query(
+        "SELECT id FROM cart WHERE user_id = ? LIMIT 1",
+        [userId]
+      );
+
+      if (cartRows.length === 0) {
+        await conn.rollback();
+        return NextResponse.json({ error: "Your cart is empty" }, { status: 400 });
+      }
+
+      cartId = cartRows[0].id;
+
+      const [cartItems] = await conn.query(
+        `
+        SELECT ci.id, ci.product_id, ci.quantity, ci.price,
+               p.name, p.image_url
+        FROM cart_items ci
+        JOIN products p ON p.id = ci.product_id
+        WHERE ci.cart_id = ?
+        `,
+        [cartId]
+      );
+
+      items = cartItems;
     }
-
-    const cartId = cartRows[0].id;
-
-    const [items] = await conn.query(
-      `
-      SELECT ci.id, ci.product_id, ci.quantity, ci.price,
-             p.name, p.image_url
-      FROM cart_items ci
-      JOIN products p ON p.id = ci.product_id
-      WHERE ci.cart_id = ?
-      `,
-      [cartId]
-    );
 
     if (items.length === 0) {
       await conn.rollback();
@@ -252,7 +306,9 @@ export async function POST(req) {
       [orderId, userId, totalAmount, paymentMethod, referenceNumber]
     );
 
-    await conn.query("DELETE FROM cart_items WHERE cart_id = ?", [cartId]);
+    if (!buyNow && cartId) {
+      await conn.query("DELETE FROM cart_items WHERE cart_id = ?", [cartId]);
+    }
 
     await conn.commit();
 

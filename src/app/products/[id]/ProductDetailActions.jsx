@@ -40,12 +40,21 @@ export default function ProductDetailActions({ product }) {
   };
 
   const handleBuyNow = () => {
+    const params = new URLSearchParams({
+      buyNow: "1",
+      productId: String(product.id),
+      qty: String(Math.max(1, qty)),
+      name: product.name || "",
+      price: String(product.price ?? ""),
+      image: product.image_url || "",
+    });
+    const checkoutUrl = `/checkout?${params.toString()}`;
+
     if (!user) {
-      router.push("/login");
+      router.push(`/login?redirect=${encodeURIComponent(checkoutUrl)}`);
       return;
     }
-
-    router.push("/checkout");
+    router.push(checkoutUrl);
   };
 
   return (

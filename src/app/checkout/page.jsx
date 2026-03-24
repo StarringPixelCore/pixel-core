@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import styles from "./checkout.module.css";
 
@@ -32,6 +32,7 @@ const PAYMENT_OPTIONS = [
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [cartItems, setCartItems] = useState([]);
@@ -52,6 +53,8 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
+  const [isBuyNow, setIsBuyNow] = useState(false);
+  const [buyNowPayload, setBuyNowPayload] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -66,22 +69,47 @@ export default function CheckoutPage() {
           return;
         }
 
-        const cartRes = await fetch("/api/cart", { cache: "no-store" });
-        const cartData = await cartRes.json();
-        const items = cartData.items || [];
-
         if (cancelled) return;
 
         setUser(meData.user);
-        setCartItems(items);
-
         if (meData.user?.address) {
           setDeliveryAddress(meData.user.address);
         }
 
+        const buyNowFlag = searchParams.get("buyNow") === "1";
+        const productId = Number(searchParams.get("productId"));
+        const parsedQty = Number(searchParams.get("qty"));
+        const qty = Number.isInteger(parsedQty) && parsedQty > 0 ? parsedQty : 1;
+
+        if (buyNowFlag && Number.isInteger(productId) && productId > 0) {
+          setIsBuyNow(true);
+          setBuyNowPayload({ productId, quantity: qty });
+
+          const name = searchParams.get("name") || "Product";
+          const image = searchParams.get("image") || "";
+          const priceFromUrl = Number(searchParams.get("price"));
+          const price = Number.isFinite(priceFromUrl) ? priceFromUrl : 0;
+
+          setCartItems([
+            {
+              id: `buy-now-${productId}`,
+              product_id: productId,
+              name,
+              image_url: image,
+              price,
+              quantity: qty,
+            },
+          ]);
+          return;
+        }
+
+        const cartRes = await fetch("/api/cart", { cache: "no-store" });
+        const cartData = await cartRes.json();
+        const items = cartData.items || [];
+        setCartItems(items);
+
         if (items.length === 0) {
           router.replace("/cart");
-          return;
         }
       } catch (e) {
         console.error(e);
@@ -94,7 +122,7 @@ export default function CheckoutPage() {
     return () => {
       cancelled = true;
     };
-  }, [router]);
+  }, [router, searchParams]);
 
   const subtotal = useMemo(
     () =>
@@ -120,6 +148,9 @@ export default function CheckoutPage() {
       paymentMethod,
       notes: notes.trim() || null,
     };
+    if (isBuyNow && buyNowPayload) {
+      payload.buyNow = buyNowPayload;
+    }
 
     if (paymentMethod === "credit_debit_card") {
       payload.card = card;
@@ -158,7 +189,8 @@ export default function CheckoutPage() {
       window.dispatchEvent(
         new CustomEvent("showToast", {
           detail: {
-            message: `Order #${data.orderId} placed — ref ${data.referenceNumber}`,
+            title: "Order placed",
+            message: `Thanks for your order! We received order #${data.orderId} and we're preparing it now.`,
             type: "success",
           },
         })
@@ -190,9 +222,12 @@ export default function CheckoutPage() {
 
   return (
     <main className={styles.page}>
-      <Link href="/cart" className={styles.backLink}>
+      <Link
+        href={isBuyNow && cartItems[0]?.product_id ? `/products/${cartItems[0].product_id}` : "/cart"}
+        className={styles.backLink}
+      >
         <ArrowLeft size={18} />
-        Back to cart
+        {isBuyNow ? "Back to product" : "Back to cart"}
       </Link>
 
       <h1 className={styles.title}>Checkout</h1>
