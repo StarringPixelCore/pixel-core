@@ -1,11 +1,22 @@
+import dns from "node:dns";
 import nodemailer from "nodemailer";
+
+// Railway containers sometimes have better connectivity over IPv4 than IPv6.
+// Force DNS to return IPv4 first (best-effort; supported in modern Node versions).
+try {
+  dns.setDefaultResultOrder("ipv4first");
+} catch {
+  // If not supported, Nodemailer will fall back to default DNS behavior.
+}
 
 // Create a transporter for Gmail
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASSWORD, // Use App Password if 2FA is enabled
+    pass: process.env.GMAIL_PASSWORD, // Use a Google App Password if you have 2FA enabled
   },
 });
 
