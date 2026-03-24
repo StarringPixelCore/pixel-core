@@ -1,0 +1,106 @@
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #ddd;
+  background-color: #fff;
+  gap: 20px;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logoImage {
+  border-radius: 4px;
+}
+
+.siteName {
+  font-size: 20px;
+  font-weight: 700;
+  color: #8b5e3c;
+}
+
+.leftLinks {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex: 1;
+  margin-left: 32px;
+}
+
+.navLink {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.activeLink {
+  background-color: #8b5e3c;
+  color: #fff;
+}
+
+.rightLinks {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  min-width: fit-content;
+}
+
+.iconButton {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-color: #f3e7dc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #333;
+  transition: all 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+
+.iconButtonActive {
+  background-color: #8b5e3c;
+  color: #fff;
+}
+
+.loginButton {
+  padding: 8px 24px;
+  background-color: #8b5e3c;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: #9b673e;
+  color: #fff;
+  font-size: 12px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  font-weight: 700;
+  line-height: 1;
+}
