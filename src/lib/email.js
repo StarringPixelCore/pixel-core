@@ -1,10 +1,10 @@
-import * as Brevo from '@getbrevo/brevo';
+import Brevo from '@getbrevo/brevo';
+
+const client = Brevo.ApiClient.instance;
+const apiKey = client.authentications['api-key'];
+apiKey.apiKey = process.env.BREVO_API_KEY;
 
 const apiInstance = new Brevo.TransactionalEmailsApi();
-apiInstance.setApiKey(
-  Brevo.TransactionalEmailsApiApiKeys.apiKey,
-  process.env.BREVO_API_KEY
-);
 
 const FROM_EMAIL = process.env.BREVO_FROM_EMAIL;
 const FROM_NAME = process.env.BREVO_FROM_NAME || 'Cocoir';
