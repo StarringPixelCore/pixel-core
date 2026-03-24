@@ -277,7 +277,7 @@ export default function ProfilePage() {
       notifyCartUpdated();
       showToast({
         title: "Logged out",
-        message: "Logged out successfully",
+        message: "Logged out successfully!",
         type: "success",
       });
       router.push("/");
