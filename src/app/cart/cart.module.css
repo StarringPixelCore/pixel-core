@@ -98,6 +98,10 @@
   cursor: pointer;
 }
 
+.qtyBox span {
+  color: #2f1a0f;
+}
+
 .clearBtn {
   background: transparent;
   border: none;
@@ -127,9 +131,17 @@
   margin-bottom: 16px;
 }
 
+.summaryRow span {
+  color: #2f1a0f;
+}
+
 .summaryTotal {
   font-size: 1.3rem;
   font-weight: 700;
+}
+
+.summaryTotal span {
+  color: #9b673e;
 }
 
 .divider {
