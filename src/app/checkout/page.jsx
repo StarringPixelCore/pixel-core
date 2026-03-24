@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -30,7 +30,7 @@ const PAYMENT_OPTIONS = [
   },
 ];
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
@@ -525,5 +525,24 @@ export default function CheckoutPage() {
         </div>
       </form>
     </main>
+  );
+}
+
+function CheckoutFallback() {
+  return (
+    <main className={styles.page}>
+      <div className={styles.loadingBox}>
+        <div className={styles.spinner} aria-hidden />
+        <p style={{ marginTop: 16 }}>Loading checkout...</p>
+      </div>
+    </main>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<CheckoutFallback />}>
+      <CheckoutContent />
+    </Suspense>
   );
 }
